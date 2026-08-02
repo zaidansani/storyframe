@@ -1,0 +1,18 @@
+---
+import '@/styles/hero.css';
+
+interface Props {
+  title: string;
+  eyebrow?: string;
+}
+
+const { title, eyebrow } = Astro.props;
+---
+
+<section class="hero">
+  {eyebrow && <p class="hero-eyebrow">{eyebrow}</p>}
+  <h1>{title}</h1>
+  <div class="hero-content">
+    <slot />
+  </div>
+</section>

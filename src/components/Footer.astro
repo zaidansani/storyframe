@@ -1,0 +1,13 @@
+---
+import { getEntry } from 'astro:content';
+
+const footer = await getEntry('site', 'footer');
+
+if (!footer) {
+  throw new Error('Missing site/footer.yaml entry');
+}
+---
+
+<footer class="site-footer">
+  <p>{footer.data.text}</p>
+</footer>
