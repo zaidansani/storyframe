@@ -1,0 +1,36 @@
+---
+title: "what is storyframe?"
+author: Zaidan @zaidansani
+read_duration: 8
+---
+
+# TL;DR
+
+**storyframe** is another SSG framework that I (@zaidansani) built on Astro that utilises `.mdx` files for interactive components, like these:
+
+<MultipleChoice
+    question="is this cool or what?????"
+    options={["yes", "no"]}
+    answer={0}
+    explanation="the answer was obvious...."
+/>
+
+# the inspiration behind storyframe
+
+i came across this report on [erpx.open.gov.sg](https://erpx.open.gov.sg/) which i really liked the presentation of, and thought, why not show one of my projects in this way? i'd just graduated and wanted to show my FYP.
+
+obviously like how most things go with random hobbyist developers, this devolved away from a one-time simple HTML implementation to a more generic framework for writing "reports" in mdx with support for interactive components.
+
+in the end, what i really wanted to create was a way to make it easier to write technical reports for technical people that went beyond just pure text.
+
+# what exactly does storyframe try to do?
+
+it tries to change the world.... well obviously not HAHA but it's trying to make it easier to make articles a bit more interactive when possible. for example, interactive graphs are SO much more engaging to interact with (or maybe that's just my inability to sit still) than pure SVGs.
+
+<BarChart
+    title="engagement"
+    labels={["before being able to touch", "after being able to touch"]}
+    datasets={[{ label: "good vibes", data: [-2, 100] }]}
+/>
+
+i feel like storyframe could be really useful in transforming research papers into a more understandable format for the general public. it's not just about (haha GPT slop) making articles interactive but also about making them more engaging and accessible.

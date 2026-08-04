@@ -1,0 +1,175 @@
+---
+title: Quarterly Infrastructure Report
+description: A sample report demonstrating headings, lists, tables, code blocks, and charts.
+date: 2026-08-04
+author: Zaidan
+read_duration: 6
+---
+
+# Executive Summary
+
+Uptime across all regions held at **99.97%** this quarter, with one notable
+incident in the `us-east-1` cluster caused by a misconfigured autoscaling
+policy. The trend line below tells the real story: response times crept up
+through May as traffic grew faster than our scaling policy could react, then
+dropped sharply once the fix shipped in early June.
+
+<LineChart
+  title="Avg. response time (ms)"
+  labels={["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"]}
+  datasets={[
+    { label: "us-east-1", data: [150, 148, 145, 130, 122, 118] },
+    { label: "eu-west-1", data: [162, 160, 155, 150, 140, 135] },
+  ]}
+/>
+
+> "The incident was contained within 11 minutes, but the root cause took two
+> days to fully understand." — Postmortem summary
+
+# Key Metrics
+
+Deploy frequency was the biggest swing this quarter. Once canary deploys
+rolled out to every internal service, engineers stopped batching changes to
+avoid risk — weekly deploys jumped 29% without a corresponding rise in
+incidents.
+
+| Metric             | Q1     | Q2     | Change |
+| ------------------- | ------ | ------ | ------ |
+| Uptime              | 99.95% | 99.97% | +0.02% |
+| Avg. response time  | 142ms  | 118ms  | -17%   |
+| Incidents (P1/P2)   | 3      | 1      | -67%   |
+| Deploys per week    | 24     | 31     | +29%   |
+
+<BarChart
+  title="Deploys per week"
+  labels={["Q1", "Q2"]}
+  datasets={[{ label: "Deploys", data: [24, 31] }]}
+/>
+
+# Incident Breakdown
+
+Four services accounted for every incident this quarter. The autoscaler was
+the clear outlier — it's the newest piece of infrastructure in the stack and
+the one with the least production mileage, which tracks with it generating
+the most pages.
+
+<PieChart
+  title="Incidents by service"
+  label="Incidents"
+  labels={["Payments", "Auth", "Notifications", "Autoscaler"]}
+  data={[3, 2, 1, 4]}
+/>
+
+Of those ten incidents, only one reached P1 severity — the `us-east-1`
+autoscaler event covered in the executive summary. The rest were caught and
+resolved before they had customer-visible impact.
+
+<DoughnutChart
+  title="Incidents by severity"
+  label="Incidents"
+  labels={["P1", "P2", "P3"]}
+  data={[1, 2, 4]}
+/>
+
+# Service Health
+
+We started scoring core services across five dimensions this quarter to
+catch regressions before they become incidents. Every dimension improved
+between Q1 and Q2, but deploy velocity and cost efficiency still lag behind
+the rest — both are on the roadmap for next quarter.
+
+<RadarChart
+  title="Service health scorecard"
+  labels={["Latency", "Availability", "Error rate", "Cost efficiency", "Deploy velocity"]}
+  datasets={[
+    { label: "Q1", data: [65, 80, 70, 60, 55], fill: true },
+    { label: "Q2", data: [78, 88, 82, 65, 74], fill: true },
+  ]}
+/>
+
+# Alert Volume
+
+Error-rate alerts dominated the on-call rotation this quarter, driven almost
+entirely by noisy thresholds on the notifications service rather than real
+degradation. Tuning those thresholds is the single highest-leverage fix
+available to reduce on-call fatigue.
+
+<PolarAreaChart
+  title="Alert volume by category"
+  label="Alerts"
+  labels={["Latency", "Errors", "Saturation", "Traffic"]}
+  data={[12, 19, 7, 14]}
+/>
+
+# What Changed
+
+1. Migrated the autoscaler from a fixed threshold to a predictive model.
+2. Added circuit breakers to the payments service.
+3. Rolled out canary deploys to all internal services.
+
+The autoscaler fix was the highest-leverage change. Here's the relevant
+snippet from the new scaling policy:
+
+```yaml
+autoscaling:
+    min_replicas: 4
+    max_replicas: 40
+    target_cpu_percent: 65
+    scale_down_cooldown: 300s
+```
+
+Deploy duration held steady even as replica counts scaled up under the new
+policy — a good sign the predictive model isn't just reacting faster, it's
+scaling more precisely.
+
+<ScatterChart
+  title="Deploy duration vs. replica count"
+  datasets={[
+    {
+      label: "Deploys",
+      data: [
+        { x: 4, y: 42 },
+        { x: 8, y: 55 },
+        { x: 12, y: 61 },
+        { x: 20, y: 70 },
+        { x: 31, y: 88 },
+        { x: 40, y: 95 },
+      ],
+    },
+  ]}
+/>
+
+# Open Questions
+
+- Should we extend circuit breakers to the notifications service?
+- Is 40 max replicas enough headroom for the holiday traffic spike?
+- Do we need a dedicated on-call rotation for the autoscaler?
+
+The notifications service sits in an odd spot: moderate incident count, but
+the customer impact of each one has been small so far. Payments is the
+opposite — fewer incidents, but each one touches checkout, which is why it's
+sized largest below despite a lower raw count than the autoscaler.
+
+<BubbleChart
+  title="Incidents by service (bubble size = customer impact)"
+  datasets={[
+    {
+      label: "Incidents",
+      data: [
+        { x: 1, y: 3, r: 22 },
+        { x: 2, y: 2, r: 10 },
+        { x: 3, y: 1, r: 6 },
+        { x: 4, y: 4, r: 14 },
+      ],
+    },
+  ]}
+/>
+
+For more background, see the [original incident thread](/articles/intro) and
+the linked [runbook](https://docs.astro.build) for escalation steps.
+
+# Next Quarter
+
+We're prioritizing three initiatives: predictive scaling for two more
+services, a full audit of alert thresholds, and reducing average deploy time
+below 90 seconds.

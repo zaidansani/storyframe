@@ -2,15 +2,24 @@
 import { Font } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Footer from '@/components/Footer.astro';
-import { getFolderContents } from '@/lib/page-tree';
+import { getAllFolders, getFolderContents } from '@/lib/page-tree';
 import { activeFonts, themeCSS } from '@/lib/theme-presets';
 import '@/styles/theme.css';
 import '@/styles/page-list.css';
 
-const LANDING_FOLDER = 'articles';
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  const folders = getAllFolders(pages);
 
-const allPages = await getCollection('pages');
-const { pages } = getFolderContents(allPages, LANDING_FOLDER);
+  return folders.map((folder) => ({
+    params: { folder },
+    props: { folder, pages },
+  }));
+}
+
+const { folder, pages } = Astro.props;
+const { subfolders, pages: folderPages } = getFolderContents(pages, folder);
+const title = folder.split('/').pop();
 ---
 
 <!doctype html>
@@ -18,14 +27,19 @@ const { pages } = getFolderContents(allPages, LANDING_FOLDER);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Home</title>
+    <title>{title}</title>
     <style set:html={themeCSS} />
     <Font cssVariable={activeFonts.body} preload />
     <Font cssVariable={activeFonts.heading} preload />
   </head>
   <body>
     <main class="page-list">
-      {pages.map((page) => (
+      {subfolders.map((subfolder) => (
+        <button type="button" class="page-row" onclick={`window.location.href='/${folder}/${subfolder}'`}>
+          <h2>{subfolder}</h2>
+        </button>
+      ))}
+      {folderPages.map((page) => (
         <button type="button" class="page-row" onclick={`window.location.href='/${page.id}'`}>
           <h2>{page.data.title}</h2>
           {page.data.description && <p class="page-description">{page.data.description}</p>}

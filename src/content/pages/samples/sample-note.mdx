@@ -1,0 +1,99 @@
+---
+title: "Cellular Respiration"
+description: An interactive study note covering the basics of cellular respiration, with practice questions along the way.
+date: 2026-08-05
+author: Zaidan
+read_duration: 8
+---
+
+# 4.1 What is cellular respiration?
+
+Cellular respiration is the process by which cells break down glucose to
+release energy, stored in the form of **ATP** (adenosine triphosphate). It
+happens in three main stages: glycolysis, the Krebs cycle, and the electron
+transport chain.
+
+The overall reaction can be summarized as:
+
+```
+C6H12O6 + 6O2 → 6CO2 + 6H2O + energy (ATP)
+```
+
+Most of this process takes place inside the mitochondria, often called the
+"powerhouse of the cell" — though glycolysis itself actually happens in the
+cytoplasm, before the pyruvate produced ever reaches the mitochondria.
+
+<MultipleChoice
+    question="Where does glycolysis take place?"
+    options={["Mitochondrial matrix", "Cytoplasm", "Nucleus", "Cell membrane"]}
+    answer={1}
+    explanation="Glycolysis happens in the cytoplasm. Only the later stages — the Krebs cycle and electron transport chain — take place inside the mitochondria."
+/>
+
+# 4.2 The three stages
+
+Each stage contributes differently to the cell's total ATP output:
+
+| Stage                    | Location                     | ATP yield (approx.) |
+| ------------------------ | ---------------------------- | ------------------- |
+| Glycolysis               | Cytoplasm                    | 2 ATP               |
+| Krebs cycle              | Mitochondrial matrix         | 2 ATP               |
+| Electron transport chain | Inner mitochondrial membrane | ~34 ATP             |
+
+<MultipleResponse
+    question="Which of the following stages occur inside the mitochondria? (select all that apply)"
+    options={[
+        "Glycolysis",
+        "Krebs cycle",
+        "Electron transport chain",
+        "Fermentation",
+    ]}
+    answer={[1, 2]}
+    explanation="The Krebs cycle and electron transport chain both occur inside the mitochondria — glycolysis happens in the cytoplasm, and fermentation is an anaerobic alternative pathway that doesn't use the mitochondria at all."
+/>
+
+Notice how the electron transport chain produces by far the most ATP. This
+is why cells that need lots of energy, like muscle cells, are packed with
+mitochondria.
+
+<BarChart
+    title="Approximate ATP yield per stage"
+    labels={["Glycolysis", "Krebs cycle", "Electron transport chain"]}
+    datasets={[{ label: "ATP produced", data: [2, 2, 34] }]}
+/>
+
+# 4.3 Key vocabulary
+
+Fill in the blank with the correct term as you go — try to answer from
+memory before scrolling back up.
+
+<FillInTheBlank
+    question="The molecule that stores and transports chemical energy within cells is called ______."
+    answers={["ATP", "adenosine triphosphate"]}
+    explanation="ATP (adenosine triphosphate) is the primary energy currency of the cell."
+/>
+
+<FillInTheBlank
+    question="The organelle where most of cellular respiration takes place is the ______."
+    answers={["mitochondria", "mitochondrion"]}
+    explanation="The mitochondria host the Krebs cycle and electron transport chain, and are often called the 'powerhouse of the cell.'"
+/>
+
+# 4.4 Check your understanding
+
+One last round before moving on to the next chapter.
+
+<MultipleChoice
+    question="Which process would a cell rely on if oxygen were unavailable?"
+    options={[
+        "Krebs cycle",
+        "Electron transport chain",
+        "Fermentation",
+        "Photosynthesis",
+    ]}
+    answer={2}
+    explanation="Without oxygen, cells fall back on fermentation to regenerate a small amount of ATP anaerobically."
+/>
+
+> Up next: Chapter 5 covers photosynthesis, and how plants run this whole
+> process in reverse to build glucose in the first place.

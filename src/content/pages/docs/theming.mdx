@@ -1,0 +1,103 @@
+---
+title: "Theming"
+description: How to add a new theme preset — colors, fonts, and what each color token means.
+---
+
+# Overview
+
+The whole site's look is driven by one file: `src/lib/theme-presets.ts`. It's
+the single source of truth for both colors and fonts. `src/styles/theme.css`
+never hardcodes a color or font — it only consumes the `--color-*` and
+`--font-*` CSS variables that `theme-presets.ts` produces.
+
+The active preset is picked by editing one constant:
+
+```ts
+export const THEME_PRESET: "classic" | "tech" | "newsletter" = "newsletter";
+```
+
+# Color tokens
+
+Each preset defines a `light` and `dark` `Palette`, with six tokens:
+
+| Token       | CSS variable         | Meaning                                             |
+| ----------- | -------------------- | --------------------------------------------------- |
+| `bg`        | `--color-bg`         | Page background                                     |
+| `text`      | `--color-text`       | Primary body/heading text                           |
+| `textMuted` | `--color-text-muted` | Secondary text — captions, metadata, muted copy     |
+| `accent`    | `--color-accent`     | Links, active/interactive elements, highlight color |
+| `border`    | `--color-border`     | Dividers, table borders, chart axes/grid            |
+| `surface`   | `--color-surface`    | Raised/inset backgrounds — code blocks, chart cards |
+
+These become CSS custom properties on `:root`, with light values as the
+default, a `prefers-color-scheme: dark` media query for OS-level dark mode,
+and `:root[data-theme="light"|"dark"]` overrides for the manual toggle
+(`src/components/ThemeToggle.astro`, persisted to `localStorage`).
+
+Chart series colors are separate, defined in `src/styles/chart.css` as
+`--chart-series-1` through `--chart-series-8` (an 8-color categorical
+palette), plus `--chart-ink`, `--chart-ink-muted`, and `--chart-grid`, which
+are derived from the main tokens above. Charts have their own light/dark
+values here because a categorical palette needs more colors than the core
+six tokens provide. `src/lib/chart-client.ts` reads these via
+`getComputedStyle` and watches the `data-theme` attribute with a
+`MutationObserver` to redraw charts when the theme changes.
+
+# Fonts
+
+Each preset picks three fonts by role:
+
+- `bodyVar` — body text
+- `headingVar` — headings
+- `codeVar` — code/pre blocks
+
+Fonts are loaded via `astro:assets`' `<Font>` component, which requires every
+font to be registered in `astro.config.mjs` under a matching `cssVariable`:
+
+```js
+fonts: [
+    {
+        provider: fontProviders.google(),
+        name: "Inter",
+        cssVariable: "--font-inter",
+    },
+    // ...
+],
+```
+
+`theme-presets.ts` then builds three composite variables that `theme.css`
+actually consumes, each falling back to a system font stack if the web font
+fails to load:
+
+- `--font-text` → `body`
+- `--font-main-heading` → headings
+- `--font-code` → `code`/`pre`
+
+# Adding a new theme preset
+
+1. **Pick fonts.** Add each new Google Font to the `fonts` array in
+   `astro.config.mjs`, with a `--font-<name>` CSS variable.
+2. **Register the font names.** Add the new `cssVariable` strings to the
+   `FontCssVar` union type in `theme-presets.ts`.
+3. **Add the preset.** In the `PRESETS` object, add a new key (and extend the
+   `THEME_PRESET` union type) with `light`/`dark` palettes and `bodyVar` /
+   `headingVar` / `codeVar` pointing at your registered font variables. A
+   short comment above each preset describing its intended feel (e.g. "warm,
+   classy serif editorial") is expected — it's the only place that meaning
+   lives.
+4. **Optional: chart colors.** If the new theme needs a different chart
+   palette, add matching `--chart-series-*` overrides in `src/styles/chart.css`
+   for both the manual `[data-theme="dark"]` selector and the
+   `prefers-color-scheme: dark` media query.
+5. **Activate it.** Set `THEME_PRESET` to your new key.
+
+# Existing presets
+
+- **`classic`** — clean, neutral, gets out of the way. Sans body/heading
+  (Inter), mono code (JetBrains Mono), blue accent.
+- **`tech`** — opinionated dev look: monospace everywhere (JetBrains Mono
+  body, Space Mono headings, Fira Code code), high-contrast neon-green
+  (`#d4ff3f`) accent.
+- **`newsletter`** — warm, classy editorial feel. Serif body (Source Serif 4),
+  display serif headings (Playfair Display), mono code (IBM Plex Mono), amber
+  accent.

@@ -1,0 +1,328 @@
+---
+title: "Component Reference"
+description: A catalog of every interactive component available in articles — charts and question types — with their params and a live sample of each.
+---
+
+# Introduction to charts
+
+All charts live in `src/components/charts/` and share `title` and `height`
+(pixels, default `320`) props. They render into a `<canvas>` via Chart.js,
+queued through `window.__chartQueue` and drawn client-side by
+`src/lib/chart-client.ts`.
+
+# BarChart
+
+| Param      | Type                                  | Required | Description                       |
+| ---------- | ------------------------------------- | -------- | --------------------------------- |
+| `title`    | `string`                              | no       | Caption shown above the chart     |
+| `labels`   | `string[]`                            | yes      | X-axis category labels            |
+| `datasets` | `{ label: string; data: number[] }[]` | yes      | One or more bar series            |
+| `height`   | `number`                              | no       | Canvas height in px (default 320) |
+
+<BarChart
+    title="Monthly signups"
+    labels={["Jan", "Feb", "Mar", "Apr"]}
+    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+/>
+
+```mdx
+<BarChart
+    title="Monthly signups"
+    labels={["Jan", "Feb", "Mar", "Apr"]}
+    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+/>
+```
+
+# LineChart
+
+| Param      | Type                                                  | Required | Description                       |
+| ---------- | ----------------------------------------------------- | -------- | --------------------------------- |
+| `title`    | `string`                                              | no       | Caption shown above the chart     |
+| `labels`   | `string[]`                                            | yes      | X-axis category labels            |
+| `datasets` | `{ label: string; data: number[]; fill?: boolean }[]` | yes      | One or more line series           |
+| `height`   | `number`                                              | no       | Canvas height in px (default 320) |
+
+<LineChart
+    title="Temperature over a week"
+    labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+    datasets={[{ label: "°C", data: [18, 20, 19, 22, 24, 23, 21], fill: true }]}
+/>
+
+```mdx
+<LineChart
+    title="Temperature over a week"
+    labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+    datasets={[{ label: "°C", data: [18, 20, 19, 22, 24, 23, 21], fill: true }]}
+/>
+```
+
+# PieChart
+
+| Param    | Type       | Required | Description                       |
+| -------- | ---------- | -------- | --------------------------------- |
+| `title`  | `string`   | no       | Caption shown above the chart     |
+| `label`  | `string`   | no       | Series label (used in tooltips)   |
+| `labels` | `string[]` | yes      | Slice labels                      |
+| `data`   | `number[]` | yes      | Slice values                      |
+| `height` | `number`   | no       | Canvas height in px (default 320) |
+
+<PieChart
+    title="Traffic sources"
+    label="Sessions"
+    labels={["Organic", "Direct", "Referral"]}
+    data={[55, 30, 15]}
+/>
+
+```mdx
+<PieChart
+    title="Traffic sources"
+    label="Sessions"
+    labels={["Organic", "Direct", "Referral"]}
+    data={[55, 30, 15]}
+/>
+```
+
+# DoughnutChart
+
+| Param    | Type       | Required | Description                       |
+| -------- | ---------- | -------- | --------------------------------- |
+| `title`  | `string`   | no       | Caption shown above the chart     |
+| `label`  | `string`   | no       | Series label (used in tooltips)   |
+| `labels` | `string[]` | yes      | Slice labels                      |
+| `data`   | `number[]` | yes      | Slice values                      |
+| `height` | `number`   | no       | Canvas height in px (default 320) |
+
+<DoughnutChart
+    title="Device breakdown"
+    label="Users"
+    labels={["Desktop", "Mobile", "Tablet"]}
+    data={[45, 40, 15]}
+/>
+
+```mdx
+<DoughnutChart
+    title="Device breakdown"
+    label="Users"
+    labels={["Desktop", "Mobile", "Tablet"]}
+    data={[45, 40, 15]}
+/>
+```
+
+# RadarChart
+
+| Param      | Type                                                  | Required | Description                       |
+| ---------- | ----------------------------------------------------- | -------- | --------------------------------- |
+| `title`    | `string`                                              | no       | Caption shown above the chart     |
+| `labels`   | `string[]`                                            | yes      | Axis labels                       |
+| `datasets` | `{ label: string; data: number[]; fill?: boolean }[]` | yes      | One or more series                |
+| `height`   | `number`                                              | no       | Canvas height in px (default 320) |
+
+<RadarChart
+    title="Skill comparison"
+    labels={["Speed", "Accuracy", "Stamina", "Strength", "Agility"]}
+    datasets={[
+        { label: "Player A", data: [80, 90, 70, 60, 85] },
+        { label: "Player B", data: [65, 75, 90, 80, 70] },
+    ]}
+/>
+
+```mdx
+<RadarChart
+    title="Skill comparison"
+    labels={["Speed", "Accuracy", "Stamina", "Strength", "Agility"]}
+    datasets={[
+        { label: "Player A", data: [80, 90, 70, 60, 85] },
+        { label: "Player B", data: [65, 75, 90, 80, 70] },
+    ]}
+/>
+```
+
+# PolarAreaChart
+
+| Param    | Type       | Required | Description                       |
+| -------- | ---------- | -------- | --------------------------------- |
+| `title`  | `string`   | no       | Caption shown above the chart     |
+| `label`  | `string`   | no       | Series label (used in tooltips)   |
+| `labels` | `string[]` | yes      | Slice labels                      |
+| `data`   | `number[]` | yes      | Slice values                      |
+| `height` | `number`   | no       | Canvas height in px (default 320) |
+
+<PolarAreaChart
+    title="Category weight"
+    label="Score"
+    labels={["Design", "Engineering", "Marketing", "Sales"]}
+    data={[12, 19, 8, 15]}
+/>
+
+```mdx
+<PolarAreaChart
+    title="Category weight"
+    label="Score"
+    labels={["Design", "Engineering", "Marketing", "Sales"]}
+    data={[12, 19, 8, 15]}
+/>
+```
+
+# ScatterChart
+
+| Param      | Type                                                    | Required | Description                       |
+| ---------- | ------------------------------------------------------- | -------- | --------------------------------- |
+| `title`    | `string`                                                | no       | Caption shown above the chart     |
+| `datasets` | `{ label: string; data: { x: number; y: number }[] }[]` | yes      | One or more point series          |
+| `height`   | `number`                                                | no       | Canvas height in px (default 320) |
+
+<ScatterChart
+    title="Height vs. weight"
+    datasets={[
+        {
+            label: "Sample",
+            data: [
+                { x: 160, y: 55 },
+                { x: 170, y: 65 },
+                { x: 180, y: 75 },
+                { x: 190, y: 90 },
+            ],
+        },
+    ]}
+/>
+
+```mdx
+<ScatterChart
+    title="Height vs. weight"
+    datasets={[
+        {
+            label: "Sample",
+            data: [
+                { x: 160, y: 55 },
+                { x: 170, y: 65 },
+                { x: 180, y: 75 },
+                { x: 190, y: 90 },
+            ],
+        },
+    ]}
+/>
+```
+
+# BubbleChart
+
+| Param      | Type                                                               | Required | Description                               |
+| ---------- | ------------------------------------------------------------------ | -------- | ----------------------------------------- |
+| `title`    | `string`                                                           | no       | Caption shown above the chart             |
+| `datasets` | `{ label: string; data: { x: number; y: number; r: number }[] }[]` | yes      | One or more bubble series (`r` is radius) |
+| `height`   | `number`                                                           | no       | Canvas height in px (default 320)         |
+
+<BubbleChart
+    title="Market segments"
+    datasets={[
+        {
+            label: "Segments",
+            data: [
+                { x: 20, y: 30, r: 10 },
+                { x: 40, y: 10, r: 20 },
+                { x: 60, y: 50, r: 15 },
+            ],
+        },
+    ]}
+/>
+
+```mdx
+<BubbleChart
+    title="Market segments"
+    datasets={[
+        {
+            label: "Segments",
+            data: [
+                { x: 20, y: 30, r: 10 },
+                { x: 40, y: 10, r: 20 },
+                { x: 60, y: 50, r: 15 },
+            ],
+        },
+    ]}
+/>
+```
+
+# Introduction to questions
+
+All question components live in `src/components/questions/`, share a
+consistent look via `src/styles/question.css`, and are graded client-side by
+`src/lib/question-client.ts`. Every type accepts an optional `explanation`
+string shown after the question is checked.
+
+# MultipleChoice
+
+Single correct answer, selected with radio buttons.
+
+| Param         | Type       | Required | Description                                |
+| ------------- | ---------- | -------- | ------------------------------------------ |
+| `question`    | `string`   | yes      | The question prompt                        |
+| `options`     | `string[]` | yes      | The list of choices                        |
+| `answer`      | `number`   | yes      | Index into `options` of the correct choice |
+| `explanation` | `string`   | no       | Shown after the answer is checked          |
+
+<MultipleChoice
+    question="What is the capital of France?"
+    options={["Berlin", "Madrid", "Paris", "Rome"]}
+    answer={2}
+    explanation="Paris has been the capital of France since the 10th century."
+/>
+
+```mdx
+<MultipleChoice
+    question="What is the capital of France?"
+    options={["Berlin", "Madrid", "Paris", "Rome"]}
+    answer={2}
+    explanation="Paris has been the capital of France since the 10th century."
+/>
+```
+
+# MultipleResponse
+
+One or more correct answers, selected with checkboxes.
+
+| Param         | Type       | Required | Description                                   |
+| ------------- | ---------- | -------- | --------------------------------------------- |
+| `question`    | `string`   | yes      | The question prompt                           |
+| `options`     | `string[]` | yes      | The list of choices                           |
+| `answer`      | `number[]` | yes      | Indexes into `options` of all correct choices |
+| `explanation` | `string`   | no       | Shown after the answer is checked             |
+
+<MultipleResponse
+    question="Which of these are prime numbers? (select all that apply)"
+    options={["2", "4", "7", "9"]}
+    answer={[0, 2]}
+    explanation="2 and 7 are prime — 4 and 9 each have factors other than 1 and themselves."
+/>
+
+```mdx
+<MultipleResponse
+    question="Which of these are prime numbers? (select all that apply)"
+    options={["2", "4", "7", "9"]}
+    answer={[0, 2]}
+    explanation="2 and 7 are prime — 4 and 9 each have factors other than 1 and themselves."
+/>
+```
+
+# FillInTheBlank
+
+Free-text entry, checked against a list of acceptable answers.
+
+| Param           | Type       | Required | Description                                          |
+| --------------- | ---------- | -------- | ---------------------------------------------------- |
+| `question`      | `string`   | yes      | The question prompt                                  |
+| `answers`       | `string[]` | yes      | Accepted answers (any match counts as correct)       |
+| `caseSensitive` | `boolean`  | no       | Whether matching is case-sensitive (default `false`) |
+| `explanation`   | `string`   | no       | Shown after the answer is checked                    |
+
+<FillInTheBlank
+    question="The chemical symbol for gold is ______."
+    answers={["Au"]}
+    explanation="Au comes from the Latin word for gold, aurum."
+/>
+
+```mdx
+<FillInTheBlank
+    question="The chemical symbol for gold is ______."
+    answers={["Au"]}
+    explanation="Au comes from the Latin word for gold, aurum."
+/>
+```
