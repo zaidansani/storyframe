@@ -7,8 +7,20 @@ another SSG framework made in astro. written by [@zaidansani](https://github.com
 
 ## getting started from the template (assuming github pages hosting)
 
-- click "Use this template" on GitHub and generate your repo from the `template` branch (not `master`, which is the live storyframe site)
+- go to https://github.com/zaidansani/storyframe
+- click "Use this template" → "Create a new repository"
+- in the branch dropdown, select `template` (very important, don't use main - that would have my articles, which defeats the point, LOL)
+- name your repo and create it
 - update `astro.config.mjs` with your own `site` and `base` — `site` is your GitHub Pages domain (e.g. `https://<username>.github.io`) and `base` is your repo name (e.g. `/<repo-name>`)
+- update the `deploy.yml` workflow to push to main if you want automated updates whenever you push (recommended)
+
+```
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+```
+
 - push to `main` to trigger the included GitHub Actions deploy workflow (`.github/workflows/deploy.yml`), and set Settings → Pages → Source to "GitHub Actions"
 
 ## how to use
