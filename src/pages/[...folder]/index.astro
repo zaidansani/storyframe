@@ -35,12 +35,12 @@ const title = folder.split('/').pop();
   <body>
     <main class="page-list">
       {subfolders.map((subfolder) => (
-        <button type="button" class="page-row" onclick={`window.location.href='/${folder}/${subfolder}'`}>
+        <button type="button" class="page-row" onclick={`window.location.href='${import.meta.env.BASE_URL}/${folder}/${subfolder}'`}>
           <h2>{subfolder}</h2>
         </button>
       ))}
       {folderPages.map((page) => (
-        <button type="button" class="page-row" onclick={`window.location.href='/${page.id}'`}>
+        <button type="button" class="page-row" onclick={`window.location.href='${import.meta.env.BASE_URL}/${page.id}'`}>
           <h2>{page.data.title}</h2>
           {page.data.description && <p class="page-description">{page.data.description}</p>}
           <p class="page-meta">
