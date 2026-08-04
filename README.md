@@ -5,12 +5,11 @@ another SSG framework made in astro. written by [@zaidansani](https://github.com
 - utilises `.mdx files` for interactive components, like graphs and questions
 - built for people who want to write articles with slightly more pizzazz
 
-## installation
+## getting started from the template (assuming github pages hosting)
 
-```sh
-pnpm install
-pnpm dev
-```
+- click "Use this template" on GitHub and generate your repo from the `template` branch (not `master`, which is the live storyframe site)
+- update `astro.config.mjs` with your own `site` and `base` — `site` is your GitHub Pages domain (e.g. `https://<username>.github.io`) and `base` is your repo name (e.g. `/<repo-name>`)
+- push to `main` to trigger the included GitHub Actions deploy workflow (`.github/workflows/deploy.yml`), and set Settings → Pages → Source to "GitHub Actions"
 
 ## how to use
 
