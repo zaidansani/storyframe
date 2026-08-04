@@ -3,9 +3,11 @@ import icon from "astro-icon";
 import { defineConfig, fontProviders } from "astro/config";
 import { rehypeSectionize } from "./src/lib/rehype-sectionize.mjs";
 
+const basePath = process.env.PUBLIC_BASE_PATH ?? "";
+
 export default defineConfig({
     site: process.env.PUBLIC_SITE_URL ?? "https://example.com",
-    base: process.env.PUBLIC_BASE_PATH ?? "/",
+    base: basePath ? `/${basePath}` : "/",
     integrations: [mdx(), icon()],
     markdown: {
         rehypePlugins: [rehypeSectionize],
