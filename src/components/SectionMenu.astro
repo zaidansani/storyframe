@@ -1,0 +1,122 @@
+---
+import '@/styles/section-menu.css';
+---
+
+<nav class="section-menu" data-section-menu aria-hidden="true">
+  <button
+    type="button"
+    class="section-menu-toggle"
+    data-section-menu-toggle
+    aria-expanded="false"
+    aria-controls="section-menu-panel"
+    aria-label="Jump to section"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <line x1="4" y1="6" x2="20" y2="6"></line>
+      <line x1="4" y1="12" x2="20" y2="12"></line>
+      <line x1="4" y1="18" x2="20" y2="18"></line>
+    </svg>
+  </button>
+  <div class="section-menu-panel" id="section-menu-panel" data-section-menu-panel>
+    <ul class="section-menu-list" data-section-menu-list></ul>
+  </div>
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-section-menu]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-section-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-section-menu-panel]');
+  const list = document.querySelector<HTMLElement>('[data-section-menu-list]');
+  const headings = Array.from(document.querySelectorAll<HTMLElement>('.article-content h1'));
+
+  if (nav && toggle && panel && list && headings.length > 0) {
+    nav.removeAttribute('aria-hidden');
+
+    const HEADING_PADDING = 24;
+
+    const scrollToHeading = (heading: HTMLElement) => {
+      const html = document.documentElement;
+      const previousSnapType = html.style.scrollSnapType;
+      const target = Math.max(0, heading.getBoundingClientRect().top + window.scrollY - HEADING_PADDING);
+
+      // Section containers are vertically centered and can overflow the
+      // viewport, which pushes the heading above the section's snap point.
+      // Scroll-snap would otherwise pull the scroll position back to that
+      // point after a programmatic scroll, so it's disabled for the
+      // duration of the scroll and restored once it settles.
+      html.style.scrollSnapType = 'none';
+
+      const restoreSnap = () => {
+        html.style.scrollSnapType = previousSnapType;
+      };
+
+      if ('onscrollend' in window) {
+        window.addEventListener('scrollend', restoreSnap, { once: true });
+      } else {
+        window.setTimeout(restoreSnap, 600);
+      }
+
+      window.scrollTo({ top: target, behavior: 'smooth' });
+    };
+
+    const items = headings.map((heading, index) => {
+      const li = document.createElement('li');
+      const link = document.createElement('button');
+      link.type = 'button';
+      link.className = 'section-menu-link';
+      link.textContent = heading.textContent;
+      link.addEventListener('click', () => {
+        scrollToHeading(heading);
+        closeMenu();
+      });
+      li.appendChild(link);
+      list.appendChild(li);
+      return { heading, link };
+    });
+
+    const closeMenu = () => {
+      panel.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    };
+
+    const openMenu = () => {
+      panel.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+    };
+
+    toggle.addEventListener('click', () => {
+      if (panel.classList.contains('is-open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!nav.contains(event.target as Node)) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMenu();
+    });
+
+    const updateActive = () => {
+      const activeOffset = window.scrollY + window.innerHeight * 0.3;
+      let activeIndex = 0;
+      items.forEach(({ heading }, index) => {
+        if (heading.offsetTop <= activeOffset) activeIndex = index;
+      });
+      items.forEach(({ link }, index) => {
+        link.classList.toggle('is-active', index === activeIndex);
+      });
+    };
+
+    updateActive();
+    window.addEventListener('scroll', updateActive, { passive: true });
+    window.addEventListener('resize', updateActive);
+  } else {
+    nav?.remove();
+  }
+</script>

@@ -4,6 +4,7 @@ import Footer from '@/components/Footer.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import Hero from '@/components/sections/Hero.astro';
 import ReadingProgress from '@/components/ReadingProgress.astro';
+import SectionMenu from '@/components/SectionMenu.astro';
 import { activeFonts, themeCSS } from '@/lib/theme-presets';
 import '@/styles/theme.css';
 
@@ -40,6 +41,7 @@ const { title, description, date, author, read_duration } = Astro.props;
   </head>
   <body>
     <ThemeToggle />
+    <SectionMenu />
     <ReadingProgress />
     <main>
       <Hero title={title} description={description} date={date} author={author} read_duration={read_duration} />

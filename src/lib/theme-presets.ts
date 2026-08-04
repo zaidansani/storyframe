@@ -4,7 +4,7 @@
 // be registered with astro:assets' <Font> component (see astro.config.mjs)
 // under the same cssVariable names used here.
 
-export const THEME_PRESET: "default" | "sepia" | "ocean" | "forest" = "ocean";
+export const THEME_PRESET: "classic" | "tech" | "newsletter" = "newsletter";
 
 const SANS_FALLBACK =
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
@@ -25,16 +25,11 @@ type Palette = {
 // astro:assets' <Font> component types its cssVariable prop against them.
 type FontCssVar =
     | "--font-inter"
-    | "--font-bitcount"
     | "--font-jetbrains-mono"
     | "--font-source-serif-4"
     | "--font-playfair-display"
     | "--font-ibm-plex-mono"
-    | "--font-manrope"
-    | "--font-space-grotesk"
     | "--font-fira-code"
-    | "--font-work-sans"
-    | "--font-fraunces"
     | "--font-space-mono";
 
 type Preset = {
@@ -46,8 +41,9 @@ type Preset = {
     codeVar: FontCssVar;
 };
 
-const PRESETS: Record<"default" | "sepia" | "ocean" | "forest", Preset> = {
-    default: {
+const PRESETS: Record<"classic" | "tech" | "newsletter", Preset> = {
+    // Default: clean, neutral, gets out of the way.
+    classic: {
         light: {
             bg: "#ffffff",
             text: "#1a1a1a",
@@ -66,10 +62,34 @@ const PRESETS: Record<"default" | "sepia" | "ocean" | "forest", Preset> = {
         },
         bodyVar: "--font-inter",
         bodyFallback: SANS_FALLBACK,
-        headingVar: "--font-bitcount",
+        headingVar: "--font-inter",
         codeVar: "--font-jetbrains-mono",
     },
-    sepia: {
+    // Opinionated dev/tech look: monospace everywhere, high-contrast neon accent.
+    tech: {
+        light: {
+            bg: "#f5f5f0",
+            text: "#0a0a0a",
+            textMuted: "#5a5f52",
+            accent: "#d4ff3f",
+            border: "#0a0a0a",
+            surface: "#e8e8de",
+        },
+        dark: {
+            bg: "#0a0b08",
+            text: "#e8ffb0",
+            textMuted: "#8a9270",
+            accent: "#d4ff3f",
+            border: "#3a4020",
+            surface: "#14150f",
+        },
+        bodyVar: "--font-jetbrains-mono",
+        bodyFallback: MONO_FALLBACK,
+        headingVar: "--font-space-mono",
+        codeVar: "--font-fira-code",
+    },
+    // Newsletter: warm, classy serif editorial feel.
+    newsletter: {
         light: {
             bg: "#f7f1e3",
             text: "#3a2f22",
@@ -91,53 +111,9 @@ const PRESETS: Record<"default" | "sepia" | "ocean" | "forest", Preset> = {
         headingVar: "--font-playfair-display",
         codeVar: "--font-ibm-plex-mono",
     },
-    ocean: {
-        light: {
-            bg: "#f4fbfb",
-            text: "#0b2b30",
-            textMuted: "#4c6c70",
-            accent: "#0891b2",
-            border: "#cfeaec",
-            surface: "#e6f6f7",
-        },
-        dark: {
-            bg: "#071a1d",
-            text: "#dff5f6",
-            textMuted: "#7fa8ac",
-            accent: "#22d3ee",
-            border: "#123338",
-            surface: "#0d2528",
-        },
-        bodyVar: "--font-manrope",
-        bodyFallback: SANS_FALLBACK,
-        headingVar: "--font-space-grotesk",
-        codeVar: "--font-fira-code",
-    },
-    forest: {
-        light: {
-            bg: "#f5f7f2",
-            text: "#1e2a1a",
-            textMuted: "#5c6b52",
-            accent: "#4d7c0f",
-            border: "#dbe4d0",
-            surface: "#eaf0e2",
-        },
-        dark: {
-            bg: "#14180f",
-            text: "#e5ecdc",
-            textMuted: "#93a184",
-            accent: "#a3e635",
-            border: "#2a3320",
-            surface: "#1c2216",
-        },
-        bodyVar: "--font-work-sans",
-        bodyFallback: SANS_FALLBACK,
-        headingVar: "--font-fraunces",
-        codeVar: "--font-space-mono",
-    },
 };
 
-const preset = PRESETS[THEME_PRESET] ?? PRESETS.default;
+const preset = PRESETS[THEME_PRESET] ?? PRESETS.classic;
 
 export const activeFonts = {
     body: preset.bodyVar,

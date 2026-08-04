@@ -114,11 +114,7 @@ function buildConfig(req: ChartRequest, colors: Colors) {
   };
 }
 
-export function initChart(req: ChartRequest) {
-  const canvas = document.getElementById(req.id) as HTMLCanvasElement | null;
-  if (!canvas) return;
-  const root = canvas.closest("[data-chart-root]") as HTMLElement;
-
+function createChart(req: ChartRequest, canvas: HTMLCanvasElement, root: HTMLElement) {
   const initial = buildConfig(req, readColors(root));
   const chart = new Chart(canvas, initial);
 
@@ -129,6 +125,24 @@ export function initChart(req: ChartRequest) {
     chart.update();
   });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+}
+
+export function initChart(req: ChartRequest) {
+  const canvas = document.getElementById(req.id) as HTMLCanvasElement | null;
+  if (!canvas) return;
+  const root = canvas.closest("[data-chart-root]") as HTMLElement;
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        io.disconnect();
+        createChart(req, canvas, root);
+      }
+    },
+    { threshold: 0.25 },
+  );
+  io.observe(root);
 }
 
 declare global {

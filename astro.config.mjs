@@ -9,7 +9,7 @@ export default defineConfig({
         rehypePlugins: [rehypeSectionize],
     },
     fonts: [
-        // default preset
+        // classic preset
         {
             provider: fontProviders.google(),
             name: "Inter",
@@ -17,15 +17,21 @@ export default defineConfig({
         },
         {
             provider: fontProviders.google(),
-            name: "Bitcount Prop Single",
-            cssVariable: "--font-bitcount",
-        },
-        {
-            provider: fontProviders.google(),
             name: "JetBrains Mono",
             cssVariable: "--font-jetbrains-mono",
         },
-        // sepia preset
+        // tech preset
+        {
+            provider: fontProviders.google(),
+            name: "Space Mono",
+            cssVariable: "--font-space-mono",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "Fira Code",
+            cssVariable: "--font-fira-code",
+        },
+        // newsletter preset
         {
             provider: fontProviders.google(),
             name: "Source Serif 4",
@@ -40,38 +46,6 @@ export default defineConfig({
             provider: fontProviders.google(),
             name: "IBM Plex Mono",
             cssVariable: "--font-ibm-plex-mono",
-        },
-        // ocean preset
-        {
-            provider: fontProviders.google(),
-            name: "Manrope",
-            cssVariable: "--font-manrope",
-        },
-        {
-            provider: fontProviders.google(),
-            name: "Space Grotesk",
-            cssVariable: "--font-space-grotesk",
-        },
-        {
-            provider: fontProviders.google(),
-            name: "Fira Code",
-            cssVariable: "--font-fira-code",
-        },
-        // forest preset
-        {
-            provider: fontProviders.google(),
-            name: "Work Sans",
-            cssVariable: "--font-work-sans",
-        },
-        {
-            provider: fontProviders.google(),
-            name: "Fraunces",
-            cssVariable: "--font-fraunces",
-        },
-        {
-            provider: fontProviders.google(),
-            name: "Space Mono",
-            cssVariable: "--font-space-mono",
         },
     ],
 });
