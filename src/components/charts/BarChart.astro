@@ -1,0 +1,28 @@
+---
+import "@/styles/chart.css";
+
+interface Props {
+  title?: string;
+  labels: string[];
+  datasets: { label: string; data: number[] }[];
+  height?: number;
+}
+
+const { title, labels, datasets, height = 320 } = Astro.props;
+const id = `chart-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<figure class="chart" data-chart-root>
+  {title && <figcaption class="chart-title">{title}</figcaption>}
+  <div class="chart-canvas-wrap" style={`height: ${height}px`}>
+    <canvas id={id}></canvas>
+  </div>
+</figure>
+
+<script>
+  import "@/lib/chart-client";
+</script>
+
+<script is:inline define:vars={{ id, labels, datasets }}>
+  (window.__chartQueue ??= []).push({ id, kind: "bar", labels, datasets });
+</script>

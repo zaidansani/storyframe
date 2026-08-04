@@ -2,14 +2,19 @@
 import { Font } from 'astro:assets';
 import Footer from '@/components/Footer.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
+import Hero from '@/components/sections/Hero.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
 import '@/styles/theme.css';
 
 interface Props {
   title: string;
   description?: string;
+  date?: Date;
+  author?: string;
+  read_duration?: number;
 }
 
-const { title, description } = Astro.props;
+const { title, description, date, author, read_duration } = Astro.props;
 ---
 
 <!doctype html>
@@ -19,7 +24,8 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-text" preload />
+    <Font cssVariable="--font-main-heading" preload />
     <script is:inline>
       (function () {
         const stored = localStorage.getItem('theme');
@@ -31,8 +37,12 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <ThemeToggle />
+    <ReadingProgress />
     <main>
-      <slot />
+      <Hero title={title} description={description} date={date} author={author} read_duration={read_duration} />
+      <div class="article-content">
+        <slot />
+      </div>
     </main>
     <Footer />
   </body>

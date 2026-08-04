@@ -1,17 +1,36 @@
 ---
+import { Font } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import '@/styles/theme.css';
+import '@/styles/page-list.css';
 
+const pages = await getCollection('pages');
 ---
 
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home</title>
+    <Font cssVariable="--font-text" preload />
+    <Font cssVariable="--font-main-heading" preload />
+  </head>
+  <body>
+    <main class="page-list">
+      {pages.map((page) => (
+        <button type="button" class="page-row" onclick={`window.location.href='/${page.id}'`}>
+          <h2>{page.data.title}</h2>
+          {page.data.description && <p class="page-description">{page.data.description}</p>}
+          <p class="page-meta">
+            {page.data.author && <span>{page.data.author}</span>}
+            {page.data.date && (
+              <span>{page.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            )}
+            {page.data.read_duration && <span>{page.data.read_duration} min read</span>}
+          </p>
+        </button>
+      ))}
+    </main>
+  </body>
 </html>

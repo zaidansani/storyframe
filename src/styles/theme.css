@@ -7,12 +7,13 @@
     --color-surface: #f7f7f7;
 
     --font-sans:
-        var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        var(--font-text), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         Helvetica, Arial, sans-serif;
     --font-serif: Georgia, "Times New Roman", serif;
 
     --content-width: 42rem;
     --spacing: 1.5rem;
+    --footer-height: 6rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -52,6 +53,7 @@
 
 html {
     color-scheme: light dark;
+    scroll-snap-type: y mandatory;
 }
 
 body {
@@ -67,6 +69,10 @@ main {
     max-width: var(--content-width);
     margin: 0 auto;
     padding: calc(var(--spacing) * 2) var(--spacing);
+}
+
+main:has(> .article-content:last-child) {
+    padding-bottom: 0;
 }
 
 h1,
@@ -171,11 +177,34 @@ td {
     text-align: left;
 }
 
+.article-section {
+    min-height: 100vh;
+    margin-top: calc(var(--spacing) * 3);
+    padding: calc(var(--spacing) * 3) 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    scroll-snap-align: start;
+}
+
+.article-section:last-child {
+    min-height: calc(100vh - var(--footer-height));
+    padding-bottom: 0;
+}
+
+.article-section h1 {
+    margin-top: 0;
+}
+
 .site-footer {
+    height: var(--footer-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-top: 1px solid var(--color-border);
-    padding: var(--spacing);
-    margin-top: calc(var(--spacing) * 2);
+    padding: 0 var(--spacing);
     text-align: center;
+    scroll-snap-align: end;
     color: var(--color-text-muted);
     font-size: 0.875rem;
 }

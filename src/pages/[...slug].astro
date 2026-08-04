@@ -16,6 +16,12 @@ const { page } = Astro.props;
 const { Content } = await render(page);
 ---
 
-<AppLayout title={page.data.title} description={page.data.description}>
+<AppLayout
+  title={page.data.title}
+  description={page.data.description}
+  date={page.data.date}
+  author={page.data.author}
+  read_duration={page.data.read_duration}
+>
   <Content components={sectionRegistry} />
 </AppLayout>

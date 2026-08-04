@@ -15,7 +15,8 @@
     "@astrojs/mdx": "^7.0.5",
     "@iconify-json/lucide": "^1.2.121",
     "astro": "^7.1.6",
-    "astro-icon": "^1.1.5"
+    "astro-icon": "^1.1.5",
+    "chart.js": "^4.5.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

@@ -1,0 +1,68 @@
+---
+import '@/styles/reading-progress.css';
+---
+
+<nav class="reading-progress" data-reading-progress aria-hidden="true">
+  <div class="reading-progress-track">
+    <div class="reading-progress-fill" data-reading-progress-fill></div>
+    <div class="reading-progress-points" data-reading-progress-points></div>
+  </div>
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-reading-progress]');
+  const fill = document.querySelector<HTMLElement>('[data-reading-progress-fill]');
+  const pointsContainer = document.querySelector<HTMLElement>('[data-reading-progress-points]');
+  const articleContent = document.querySelector<HTMLElement>('.article-content');
+  const headings = Array.from(document.querySelectorAll<HTMLElement>('.article-content h1'));
+
+  if (nav && fill && pointsContainer && articleContent && headings.length > 0) {
+    const rangeStart = () => articleContent.offsetTop;
+    const rangeEnd = () => document.documentElement.scrollHeight - window.innerHeight;
+
+    const points = headings.map((heading) => {
+      const point = document.createElement('div');
+      point.className = 'reading-progress-point';
+      pointsContainer.appendChild(point);
+      return { heading, point };
+    });
+
+    const positionPoints = () => {
+      const start = rangeStart();
+      const span = rangeEnd() - start;
+      points.forEach(({ heading, point }) => {
+        const percent = span > 0 ? ((heading.offsetTop - start) / span) * 100 : 0;
+        point.style.top = `${Math.min(100, Math.max(0, percent))}%`;
+      });
+    };
+
+    const update = () => {
+      const start = rangeStart();
+      const span = rangeEnd() - start;
+
+      nav.classList.toggle('is-visible', window.scrollY >= start);
+
+      const scrollPercent = span > 0 ? ((window.scrollY - start) / span) * 100 : 0;
+      fill.style.height = `${Math.min(100, Math.max(0, scrollPercent))}%`;
+
+      const activeOffset = window.scrollY + window.innerHeight * 0.3;
+      let activeIndex = 0;
+      points.forEach(({ heading }, index) => {
+        if (heading.offsetTop <= activeOffset) activeIndex = index;
+      });
+      points.forEach(({ point }, index) => {
+        point.classList.toggle('is-active', index === activeIndex);
+      });
+    };
+
+    positionPoints();
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', () => {
+      positionPoints();
+      update();
+    });
+  } else {
+    nav?.remove();
+  }
+</script>

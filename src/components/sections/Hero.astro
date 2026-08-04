@@ -3,16 +3,39 @@ import '@/styles/hero.css';
 
 interface Props {
   title: string;
-  eyebrow?: string;
+  description?: string;
+  date?: Date;
+  author?: string;
+  read_duration?: number;
 }
 
-const { title, eyebrow } = Astro.props;
+const { title, description, date, author, read_duration } = Astro.props;
+
+const formattedDate = date?.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const hasMeta = author || date || read_duration;
 ---
 
 <section class="hero">
-  {eyebrow && <p class="hero-eyebrow">{eyebrow}</p>}
   <h1>{title}</h1>
-  <div class="hero-content">
-    <slot />
-  </div>
+
+  {description && (
+    <div class="hero-content">
+      <p>{description}</p>
+    </div>
+  )}
+
+  {hasMeta && (
+    <p class="hero-meta">
+      {author && <span>{author}</span>}
+      {author && (date || read_duration) && <span aria-hidden="true">&middot;</span>}
+      {date && <time datetime={date.toISOString()}>{formattedDate}</time>}
+      {date && read_duration && <span aria-hidden="true">&middot;</span>}
+      {read_duration && <span>{read_duration} min read</span>}
+    </p>
+  )}
 </section>
