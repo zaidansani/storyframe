@@ -4,7 +4,7 @@
 // be registered with astro:assets' <Font> component (see astro.config.mjs)
 // under the same cssVariable names used here.
 
-export const THEME_PRESET: "classic" | "tech" | "newsletter" = "newsletter";
+export const THEME_PRESET: "classic" | "tech" | "newsletter" | "zai" = "zai";
 
 const SANS_FALLBACK =
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
@@ -41,7 +41,7 @@ type Preset = {
     codeVar: FontCssVar;
 };
 
-const PRESETS: Record<"classic" | "tech" | "newsletter", Preset> = {
+const PRESETS: Record<"classic" | "tech" | "newsletter" | "zai", Preset> = {
     // Default: clean, neutral, gets out of the way.
     classic: {
         light: {
@@ -107,6 +107,28 @@ const PRESETS: Record<"classic" | "tech" | "newsletter", Preset> = {
             surface: "#2a2318",
         },
         bodyVar: "--font-source-serif-4",
+        bodyFallback: SERIF_FALLBACK,
+        headingVar: "--font-playfair-display",
+        codeVar: "--font-ibm-plex-mono",
+    },
+    zai: {
+        light: {
+            bg: "#FCEEF4",
+            text: "#3a2f22",
+            textMuted: "#242456",
+            accent: "#3D3B8E",
+            border: "#C5C5E7",
+            surface: "#E2E2F3",
+        },
+        dark: {
+            bg: "#18183A",
+            text: "#ecdfc4",
+            textMuted: "#F9DCE9",
+            accent: "#E072A4",
+            border: "#42429E",
+            surface: "#242456",
+        },
+        bodyVar: "--font-ibm-plex-mono",
         bodyFallback: SERIF_FALLBACK,
         headingVar: "--font-playfair-display",
         codeVar: "--font-ibm-plex-mono",
