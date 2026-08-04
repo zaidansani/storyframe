@@ -19,7 +19,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             PUBLIC_SITE_URL: https://zaidan.dev
-            PUBLIC_BASE_PATH: /storyframe
+            PUBLIC_BASE_PATH: storyframe
         steps:
             - name: Checkout
               uses: actions/checkout@v4
