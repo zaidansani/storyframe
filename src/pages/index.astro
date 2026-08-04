@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import Footer from '@/components/Footer.astro';
 import { getFolderContents } from '@/lib/page-tree';
 import { activeFonts, themeCSS } from '@/lib/theme-presets';
+import { withBase } from '@/lib/url';
 import '@/styles/theme.css';
 import '@/styles/page-list.css';
 
@@ -26,7 +27,7 @@ const { pages } = getFolderContents(allPages, LANDING_FOLDER);
   <body>
     <main class="page-list">
       {pages.map((page) => (
-        <button type="button" class="page-row" onclick={`window.location.href='${import.meta.env.BASE_URL}/${page.id}'`}>
+        <button type="button" class="page-row" onclick={`window.location.href='${withBase(page.id)}'`}>
           <h2>{page.data.title}</h2>
           {page.data.description && <p class="page-description">{page.data.description}</p>}
           <p class="page-meta">
