@@ -6,6 +6,9 @@ import RadarChart from "@/components/charts/RadarChart.astro";
 import PolarAreaChart from "@/components/charts/PolarAreaChart.astro";
 import ScatterChart from "@/components/charts/ScatterChart.astro";
 import BubbleChart from "@/components/charts/BubbleChart.astro";
+import MultipleChoice from "@/components/questions/MultipleChoice.astro";
+import MultipleResponse from "@/components/questions/MultipleResponse.astro";
+import FillInTheBlank from "@/components/questions/FillInTheBlank.astro";
 
 export const sectionRegistry = {
     LineChart,
@@ -16,4 +19,7 @@ export const sectionRegistry = {
     PolarAreaChart,
     ScatterChart,
     BubbleChart,
+    MultipleChoice,
+    MultipleResponse,
+    FillInTheBlank,
 };

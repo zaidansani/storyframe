@@ -1,0 +1,182 @@
+.question {
+    position: relative;
+    margin: 0 0 var(--spacing);
+    padding: var(--spacing);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+
+    --question-correct: #1baf7a;
+    --question-correct-bg: #1baf7a1a;
+    --question-incorrect: #e34948;
+    --question-incorrect-bg: #e349481a;
+}
+
+:root[data-theme="dark"] .question {
+    --question-correct: #2fc98d;
+    --question-correct-bg: #2fc98d26;
+    --question-incorrect: #e66767;
+    --question-incorrect-bg: #e6676726;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .question {
+        --question-correct: #2fc98d;
+        --question-correct-bg: #2fc98d26;
+        --question-incorrect: #e66767;
+        --question-incorrect-bg: #e6676726;
+    }
+}
+
+.question-prompt {
+    margin: 0 0 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.question-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0 0 1rem;
+}
+
+.question-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.question-option:hover {
+    border-color: var(--color-accent);
+}
+
+.question-option input {
+    margin-top: 0.2rem;
+    accent-color: var(--color-accent);
+    flex-shrink: 0;
+}
+
+.question-option-text {
+    color: var(--color-text);
+}
+
+.question[data-state="answered"] .question-option {
+    cursor: default;
+}
+
+.question[data-state="answered"] .question-option:hover {
+    border-color: var(--color-border);
+}
+
+.question[data-state="answered"] .question-option[data-correct="true"] {
+    border-color: var(--question-correct);
+    background: var(--question-correct-bg);
+}
+
+.question[data-state="answered"] .question-option[data-selected="true"][data-correct="false"] {
+    border-color: var(--question-incorrect);
+    background: var(--question-incorrect-bg);
+}
+
+.question-fill-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 1rem;
+}
+
+.question-fill-input {
+    flex: 1 1 12rem;
+    padding: 0.5rem 0.65rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font: inherit;
+}
+
+.question[data-state="answered"] .question-fill-input[data-correct="true"] {
+    border-color: var(--question-correct);
+    background: var(--question-correct-bg);
+}
+
+.question[data-state="answered"] .question-fill-input[data-correct="false"] {
+    border-color: var(--question-incorrect);
+    background: var(--question-incorrect-bg);
+}
+
+.question-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.question-submit {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-accent);
+    border-radius: 6px;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.question-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.question-retry {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    cursor: pointer;
+    display: none;
+}
+
+.question[data-state="answered"] .question-retry {
+    display: inline-block;
+}
+
+.question[data-state="answered"] .question-submit {
+    display: none;
+}
+
+.question-feedback {
+    margin: 0.75rem 0 0;
+    font-weight: 600;
+    display: none;
+}
+
+.question[data-state="answered"] .question-feedback {
+    display: block;
+}
+
+.question[data-result="correct"] .question-feedback {
+    color: var(--question-correct);
+}
+
+.question[data-result="incorrect"] .question-feedback {
+    color: var(--question-incorrect);
+}
+
+.question-explanation {
+    margin: 0.5rem 0 0;
+    color: var(--color-text-muted);
+    display: none;
+}
+
+.question[data-state="answered"] .question-explanation {
+    display: block;
+}

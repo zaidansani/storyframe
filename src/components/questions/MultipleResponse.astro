@@ -1,0 +1,36 @@
+---
+import "@/styles/question.css";
+
+interface Props {
+  question: string;
+  options: string[];
+  answer: number[];
+  explanation?: string;
+}
+
+const { question, options, answer, explanation } = Astro.props;
+const id = `question-${Math.random().toString(36).slice(2, 9)}`;
+const name = `${id}-option`;
+---
+
+<form class="question" data-question-root data-kind="multiple" data-state="unanswered">
+  <p class="question-prompt">{question}</p>
+  <div class="question-options">
+    {options.map((option, index) => (
+      <label class="question-option" data-correct={answer.includes(index)}>
+        <input type="checkbox" name={name} value={index} />
+        <span class="question-option-text">{option}</span>
+      </label>
+    ))}
+  </div>
+  <div class="question-actions">
+    <button type="submit" class="question-submit">Check answer</button>
+    <button type="button" class="question-retry">Try again</button>
+  </div>
+  <p class="question-feedback"></p>
+  {explanation && <p class="question-explanation">{explanation}</p>}
+</form>
+
+<script>
+  import "@/lib/question-client";
+</script>

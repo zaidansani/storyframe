@@ -34,7 +34,8 @@ const hasMeta = author || date || read_duration;
       {author && <span>{author}</span>}
       {author && (date || read_duration) && <span aria-hidden="true">&middot;</span>}
       {date && <time datetime={date.toISOString()}>{formattedDate}</time>}
-      {date && read_duration && <span aria-hidden="true">&middot;</span>}
+    </p>
+    <p class="hero-meta">
       {read_duration && <span>{read_duration} min read</span>}
     </p>
   )}
