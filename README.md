@@ -1,6 +1,6 @@
 # storyframe
 
-another SSG framework made in astro. written by [@zaidansani](github.com/zaidansani)
+another SSG framework made in astro. written by [@zaidansani](https://github.com/zaidansani)
 
 - utilises `.mdx files` for interactive components, like graphs and questions
 - built for people who want to write articles with slightly more pizzazz

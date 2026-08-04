@@ -4,6 +4,8 @@ import { defineConfig, fontProviders } from "astro/config";
 import { rehypeSectionize } from "./src/lib/rehype-sectionize.mjs";
 
 export default defineConfig({
+    site: "https://zaidan.dev",
+    base: "/storyframe",
     integrations: [mdx(), icon()],
     markdown: {
         rehypePlugins: [rehypeSectionize],
