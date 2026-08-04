@@ -14,6 +14,7 @@ type Colors = {
   inkMuted: string;
   grid: string;
   series: string[];
+  font: string;
 };
 
 function readColors(root: Element): Colors {
@@ -24,6 +25,9 @@ function readColors(root: Element): Colors {
     inkMuted: get("--chart-ink-muted"),
     grid: get("--chart-grid"),
     series: [1, 2, 3, 4, 5, 6, 7, 8].map((n) => get(`--chart-series-${n}`)),
+    // .chart doesn't set its own font-family, so this resolves the inherited
+    // --font-text stack (per the active theme preset) to real font names.
+    font: styles.fontFamily,
   };
 }
 
@@ -36,16 +40,16 @@ function buildScales(kind: ChartKind, colors: Colors) {
   if (RADIAL_KINDS.includes(kind)) {
     return {
       r: {
-        ticks: { color: colors.inkMuted, backdropColor: "transparent" },
+        ticks: { color: colors.inkMuted, backdropColor: "transparent", font: { family: colors.font } },
         grid: { color: colors.grid },
         angleLines: { color: colors.grid },
-        pointLabels: { color: colors.ink },
+        pointLabels: { color: colors.ink, font: { family: colors.font } },
       },
     };
   }
   return {
-    x: { ticks: { color: colors.inkMuted }, grid: { color: colors.grid, display: false } },
-    y: { ticks: { color: colors.inkMuted }, grid: { color: colors.grid }, beginAtZero: true },
+    x: { ticks: { color: colors.inkMuted, font: { family: colors.font } }, grid: { color: colors.grid, display: false } },
+    y: { ticks: { color: colors.inkMuted, font: { family: colors.font } }, grid: { color: colors.grid }, beginAtZero: true },
   };
 }
 
@@ -93,12 +97,14 @@ function buildConfig(req: ChartRequest, colors: Colors) {
       plugins: {
         legend: {
           display: SLICE_KINDS.includes(req.kind) || req.datasets.length > 1,
-          labels: { color: colors.ink, usePointStyle: true, boxWidth: 8 },
+          labels: { color: colors.ink, usePointStyle: true, boxWidth: 8, font: { family: colors.font } },
         },
         tooltip: {
           backgroundColor: colors.ink,
           titleColor: colors.grid,
           bodyColor: colors.grid,
+          titleFont: { family: colors.font },
+          bodyFont: { family: colors.font },
           padding: 8,
           cornerRadius: 6,
         },

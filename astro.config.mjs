@@ -9,15 +9,69 @@ export default defineConfig({
         rehypePlugins: [rehypeSectionize],
     },
     fonts: [
+        // default preset
         {
             provider: fontProviders.google(),
             name: "Inter",
-            cssVariable: "--font-text",
+            cssVariable: "--font-inter",
         },
         {
             provider: fontProviders.google(),
             name: "Bitcount Prop Single",
-            cssVariable: "--font-main-heading",
+            cssVariable: "--font-bitcount",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "JetBrains Mono",
+            cssVariable: "--font-jetbrains-mono",
+        },
+        // sepia preset
+        {
+            provider: fontProviders.google(),
+            name: "Source Serif 4",
+            cssVariable: "--font-source-serif-4",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "Playfair Display",
+            cssVariable: "--font-playfair-display",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "IBM Plex Mono",
+            cssVariable: "--font-ibm-plex-mono",
+        },
+        // ocean preset
+        {
+            provider: fontProviders.google(),
+            name: "Manrope",
+            cssVariable: "--font-manrope",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "Space Grotesk",
+            cssVariable: "--font-space-grotesk",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "Fira Code",
+            cssVariable: "--font-fira-code",
+        },
+        // forest preset
+        {
+            provider: fontProviders.google(),
+            name: "Work Sans",
+            cssVariable: "--font-work-sans",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "Fraunces",
+            cssVariable: "--font-fraunces",
+        },
+        {
+            provider: fontProviders.google(),
+            name: "Space Mono",
+            cssVariable: "--font-space-mono",
         },
     ],
 });

@@ -1,6 +1,7 @@
 ---
 import { Font } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import { activeFonts, themeCSS } from '@/lib/theme-presets';
 import '@/styles/theme.css';
 import '@/styles/page-list.css';
 
@@ -13,8 +14,9 @@ const pages = await getCollection('pages');
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Home</title>
-    <Font cssVariable="--font-text" preload />
-    <Font cssVariable="--font-main-heading" preload />
+    <style set:html={themeCSS} />
+    <Font cssVariable={activeFonts.body} preload />
+    <Font cssVariable={activeFonts.heading} preload />
   </head>
   <body>
     <main class="page-list">

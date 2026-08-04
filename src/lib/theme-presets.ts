@@ -1,0 +1,169 @@
+// Single source of truth for theme presets: both colors and fonts.
+// theme.css never hardcodes preset data — it only consumes the resulting
+// --color-* / --font-text / --font-main-heading variables. Fonts must also
+// be registered with astro:assets' <Font> component (see astro.config.mjs)
+// under the same cssVariable names used here.
+
+export const THEME_PRESET: "default" | "sepia" | "ocean" | "forest" = "ocean";
+
+const SANS_FALLBACK =
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+const SERIF_FALLBACK = 'Georgia, "Times New Roman", serif';
+const MONO_FALLBACK =
+    "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+
+type Palette = {
+    bg: string;
+    text: string;
+    textMuted: string;
+    accent: string;
+    border: string;
+    surface: string;
+};
+
+// Must match the cssVariable names registered in astro.config.mjs, since
+// astro:assets' <Font> component types its cssVariable prop against them.
+type FontCssVar =
+    | "--font-inter"
+    | "--font-bitcount"
+    | "--font-jetbrains-mono"
+    | "--font-source-serif-4"
+    | "--font-playfair-display"
+    | "--font-ibm-plex-mono"
+    | "--font-manrope"
+    | "--font-space-grotesk"
+    | "--font-fira-code"
+    | "--font-work-sans"
+    | "--font-fraunces"
+    | "--font-space-mono";
+
+type Preset = {
+    light: Palette;
+    dark: Palette;
+    bodyVar: FontCssVar;
+    bodyFallback: string;
+    headingVar: FontCssVar;
+    codeVar: FontCssVar;
+};
+
+const PRESETS: Record<"default" | "sepia" | "ocean" | "forest", Preset> = {
+    default: {
+        light: {
+            bg: "#ffffff",
+            text: "#1a1a1a",
+            textMuted: "#5f5f5f",
+            accent: "#2563eb",
+            border: "#e5e5e5",
+            surface: "#f7f7f7",
+        },
+        dark: {
+            bg: "#14161a",
+            text: "#e8e8e8",
+            textMuted: "#a0a0a0",
+            accent: "#60a5fa",
+            border: "#2a2d33",
+            surface: "#1c1f24",
+        },
+        bodyVar: "--font-inter",
+        bodyFallback: SANS_FALLBACK,
+        headingVar: "--font-bitcount",
+        codeVar: "--font-jetbrains-mono",
+    },
+    sepia: {
+        light: {
+            bg: "#f7f1e3",
+            text: "#3a2f22",
+            textMuted: "#7a6c58",
+            accent: "#b45309",
+            border: "#e3d5b8",
+            surface: "#efe4cc",
+        },
+        dark: {
+            bg: "#1f1a13",
+            text: "#ecdfc4",
+            textMuted: "#b0a184",
+            accent: "#f0a34e",
+            border: "#3a3122",
+            surface: "#2a2318",
+        },
+        bodyVar: "--font-source-serif-4",
+        bodyFallback: SERIF_FALLBACK,
+        headingVar: "--font-playfair-display",
+        codeVar: "--font-ibm-plex-mono",
+    },
+    ocean: {
+        light: {
+            bg: "#f4fbfb",
+            text: "#0b2b30",
+            textMuted: "#4c6c70",
+            accent: "#0891b2",
+            border: "#cfeaec",
+            surface: "#e6f6f7",
+        },
+        dark: {
+            bg: "#071a1d",
+            text: "#dff5f6",
+            textMuted: "#7fa8ac",
+            accent: "#22d3ee",
+            border: "#123338",
+            surface: "#0d2528",
+        },
+        bodyVar: "--font-manrope",
+        bodyFallback: SANS_FALLBACK,
+        headingVar: "--font-space-grotesk",
+        codeVar: "--font-fira-code",
+    },
+    forest: {
+        light: {
+            bg: "#f5f7f2",
+            text: "#1e2a1a",
+            textMuted: "#5c6b52",
+            accent: "#4d7c0f",
+            border: "#dbe4d0",
+            surface: "#eaf0e2",
+        },
+        dark: {
+            bg: "#14180f",
+            text: "#e5ecdc",
+            textMuted: "#93a184",
+            accent: "#a3e635",
+            border: "#2a3320",
+            surface: "#1c2216",
+        },
+        bodyVar: "--font-work-sans",
+        bodyFallback: SANS_FALLBACK,
+        headingVar: "--font-fraunces",
+        codeVar: "--font-space-mono",
+    },
+};
+
+const preset = PRESETS[THEME_PRESET] ?? PRESETS.default;
+
+export const activeFonts = {
+    body: preset.bodyVar,
+    heading: preset.headingVar,
+    code: preset.codeVar,
+};
+
+function colorVars(p: Palette): string {
+    return (
+        `--color-bg: ${p.bg}; --color-text: ${p.text}; --color-text-muted: ${p.textMuted}; ` +
+        `--color-accent: ${p.accent}; --color-border: ${p.border}; --color-surface: ${p.surface};`
+    );
+}
+
+const fontVars =
+    `--font-text: var(${preset.bodyVar}), ${preset.bodyFallback}; ` +
+    `--font-main-heading: var(${preset.headingVar}), var(--font-text); ` +
+    `--font-code: var(${preset.codeVar}), ${MONO_FALLBACK};`;
+
+// Rendered into a <style set:html={themeCSS}> tag in the document head.
+// Covers OS-level dark mode plus the manual data-theme="light"|"dark" toggle.
+export const themeCSS = `
+:root { ${colorVars(preset.light)} ${fontVars} }
+@media (prefers-color-scheme: dark) {
+  :root { ${colorVars(preset.dark)} }
+}
+:root[data-theme="light"] { ${colorVars(preset.light)} }
+:root[data-theme="dark"] { ${colorVars(preset.dark)} }
+`;
