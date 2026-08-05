@@ -1,0 +1,68 @@
+---
+import '@/styles/layout/table-of-contents.css';
+---
+
+<nav class="toc" data-toc aria-hidden="true" aria-label="Table of contents">
+  <ul class="toc-list" data-toc-list></ul>
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-toc]');
+  const list = document.querySelector<HTMLElement>('[data-toc-list]');
+  const headings = Array.from(document.querySelectorAll<HTMLElement>('.article-content h1'));
+
+  if (nav && list && headings.length > 0) {
+    nav.removeAttribute('aria-hidden');
+
+    // .article-section has a transform for its reveal animation, which makes
+    // it the offsetParent for its descendants — so offsetTop on a heading is
+    // relative to its own section, not the document. Use the bounding rect
+    // (plus scrollY) to get a document-relative position instead.
+    const documentTop = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY;
+
+    const scrollToHeading = (heading: HTMLElement) => {
+      // Sections are scroll-snap-align: start, so scrolling the section
+      // itself into view lets the browser's own snap handle alignment
+      // instead of fighting it with a manually computed offset.
+      const section = heading.closest<HTMLElement>('.article-section');
+      (section ?? heading).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const items = headings.map((heading) => {
+      const li = document.createElement('li');
+      const link = document.createElement('button');
+      link.type = 'button';
+      link.className = 'toc-link';
+      link.textContent = heading.textContent;
+      link.addEventListener('click', () => scrollToHeading(heading));
+      li.appendChild(link);
+      list.appendChild(li);
+      return { heading, link };
+    });
+
+    const articleContent = document.querySelector<HTMLElement>('.article-content');
+
+    const update = () => {
+      if (articleContent) {
+        nav.classList.toggle('is-visible', window.scrollY >= documentTop(articleContent));
+      }
+
+      const activeOffset = window.scrollY + window.innerHeight * 0.3;
+      let activeIndex = 0;
+      items.forEach(({ heading }, index) => {
+        if (documentTop(heading) <= activeOffset) activeIndex = index;
+      });
+      items.forEach(({ link }, index) => {
+        link.classList.toggle('is-active', index === activeIndex);
+      });
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    window.addEventListener('load', update);
+    document.fonts?.ready.then(update);
+  } else {
+    nav?.remove();
+  }
+</script>
