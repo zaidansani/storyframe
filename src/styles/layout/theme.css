@@ -15,6 +15,12 @@
     --footer-height: 3rem;
 }
 
+@media (max-width: 480px) {
+    :root {
+        font-size: 15px;
+    }
+}
+
 *,
 *::before,
 *::after {
@@ -38,6 +44,13 @@ main {
     max-width: var(--content-width);
     margin: 0 auto;
     padding: calc(var(--spacing) * 2) var(--spacing);
+}
+
+@media (min-width: 1400px) {
+    :root {
+        --content-width: 60rem;
+        font-size: 20px;
+    }
 }
 
 main:has(> .article-content:last-child) {
