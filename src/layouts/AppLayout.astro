@@ -4,8 +4,7 @@ import CodeBlock from '@/components/containers/CodeBlock.astro';
 import Footer from '@/components/Footer.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import Hero from '@/components/sections/Hero.astro';
-import ReadingProgress from '@/components/ReadingProgress.astro';
-import SectionMenu from '@/components/SectionMenu.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
 import Sidenotes from '@/components/containers/Sidenotes.astro';
 import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
 import '@/styles/containers/callout.css';
@@ -61,8 +60,7 @@ const { title, description, date, author, read_duration } = Astro.props;
   </head>
   <body>
     <ThemeToggle />
-    <SectionMenu />
-    <ReadingProgress />
+    <TableOfContents />
     <main>
       <Hero title={title} description={description} date={date} author={author} read_duration={read_duration} />
       <div class="article-content">
