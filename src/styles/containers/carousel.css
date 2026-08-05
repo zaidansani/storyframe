@@ -1,0 +1,93 @@
+.carousel {
+    position: relative;
+    margin: 0 0 var(--spacing);
+}
+
+.carousel-viewport {
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.carousel-slide {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 100%;
+    min-width: 0;
+    padding: 1rem;
+}
+
+.carousel-slide-inner {
+    width: 100%;
+    padding: 0rem 1rem;
+}
+
+.carousel-slide-inner > :first-child {
+    margin-top: 0;
+}
+
+.carousel-slide-inner > :last-child {
+    margin-bottom: 0;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.carousel-arrow:hover:not(:disabled) {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.carousel-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.carousel-arrow-prev {
+    left: -1.125rem;
+}
+
+.carousel-arrow-next {
+    right: -1.125rem;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+}
+
+.carousel-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-border);
+    cursor: pointer;
+}
+
+.carousel-dot.is-active {
+    background: var(--color-accent);
+}

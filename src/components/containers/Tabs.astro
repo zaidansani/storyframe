@@ -1,0 +1,58 @@
+---
+import '@/styles/containers/tabs.css';
+
+interface Props {
+  labels: string[];
+}
+
+const { labels } = Astro.props;
+---
+
+<div class="tabs" data-tabs-root>
+  <div class="tabs-list" role="tablist">
+    {labels.map((label, index) => (
+      <button
+        type="button"
+        class="tabs-trigger"
+        role="tab"
+        id={`tabs-tab-${index}`}
+        aria-selected={index === 0 ? 'true' : 'false'}
+        aria-controls={`tabs-panel-${index}`}
+        data-index={index}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+  {labels.map((label, index) => (
+    <div
+      id={`tabs-panel-${index}`}
+      class="tabs-panel"
+      role="tabpanel"
+      aria-labelledby={`tabs-tab-${index}`}
+      hidden={index !== 0}
+    >
+      <slot name={`tab-${index}`} />
+    </div>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs-root]').forEach((root) => {
+    const triggers = root.querySelectorAll<HTMLButtonElement>('.tabs-trigger');
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const index = trigger.dataset.index;
+
+        triggers.forEach((other) => {
+          other.setAttribute('aria-selected', String(other === trigger));
+        });
+
+        root.querySelectorAll<HTMLElement>('.tabs-panel').forEach((panel) => {
+          panel.hidden = panel.id !== `tabs-panel-${index}`;
+        });
+      });
+    });
+  });
+</script>

@@ -5,7 +5,7 @@
     margin: 0 auto;
     padding: calc(var(--spacing) * 2) var(--spacing);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     align-content: center;
     gap: var(--spacing);
 }

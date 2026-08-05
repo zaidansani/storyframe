@@ -10,6 +10,12 @@ import MultipleChoice from "@/components/questions/MultipleChoice.astro";
 import MultipleResponse from "@/components/questions/MultipleResponse.astro";
 import FillInTheBlank from "@/components/questions/FillInTheBlank.astro";
 import Accordion from "@/components/containers/Accordion.astro";
+import AccordionItem from "@/components/containers/AccordionItem.astro";
+import AccordionTitle from "@/components/containers/AccordionTitle.astro";
+import AccordionContent from "@/components/containers/AccordionContent.astro";
+import Tabs from "@/components/containers/Tabs.astro";
+import Carousel from "@/components/containers/Carousel.astro";
+import CarouselSlide from "@/components/containers/CarouselSlide.astro";
 
 export const sectionRegistry = {
     LineChart,
@@ -24,4 +30,10 @@ export const sectionRegistry = {
     MultipleResponse,
     FillInTheBlank,
     Accordion,
+    AccordionItem,
+    AccordionTitle,
+    AccordionContent,
+    Tabs,
+    Carousel,
+    CarouselSlide,
 };

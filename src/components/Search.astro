@@ -1,0 +1,250 @@
+---
+import { Icon } from 'astro-icon/components';
+import '@/styles/layout/search.css';
+
+interface Props {
+  /** 'page' scopes results to exactly this URL; 'section' scopes to everything under sectionPrefix. Omit for site-wide search. */
+  scope?: 'page' | 'section';
+  /** Required when scope is 'section' — a base-relative path segment, e.g. "docs" or "articles". */
+  sectionPrefix?: string;
+}
+
+const { scope, sectionPrefix } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<button
+  type="button"
+  class="search-trigger"
+  data-search-trigger
+  aria-label="Search"
+>
+  <Icon name="lucide:search" class="search-trigger-icon" />
+</button>
+
+<div
+  class="search-overlay"
+  data-search-overlay
+  data-base={base}
+  data-scope={scope ?? 'site'}
+  data-scope-prefix={sectionPrefix ?? ''}
+  hidden
+>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="search-form">
+      <Icon name="lucide:search" class="search-form-icon" />
+      <input
+        type="text"
+        class="search-input"
+        data-search-input
+        placeholder="Search..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button type="button" class="search-close" data-search-close aria-label="Close search">
+        <Icon name="lucide:x" />
+      </button>
+    </div>
+    <p class="search-message" data-search-message hidden></p>
+    <ul class="search-results" data-search-results></ul>
+  </div>
+</div>
+
+<script>
+  interface PagefindSubResult {
+    title: string;
+    url: string;
+    excerpt: string;
+  }
+
+  interface PagefindResultData {
+    url: string;
+    meta: { title?: string };
+    excerpt: string;
+    sub_results: PagefindSubResult[];
+  }
+
+  interface PagefindResult {
+    id: string;
+    data: () => Promise<PagefindResultData>;
+  }
+
+  interface PagefindApi {
+    init: () => Promise<void>;
+    debouncedSearch: (
+      query: string
+    ) => Promise<{ results: PagefindResult[] } | null>;
+  }
+
+  const trigger = document.querySelector<HTMLButtonElement>('[data-search-trigger]');
+  const overlay = document.querySelector<HTMLDivElement>('[data-search-overlay]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-search-close]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const resultsEl = document.querySelector<HTMLUListElement>('[data-search-results]');
+  const messageEl = document.querySelector<HTMLParagraphElement>('[data-search-message]');
+
+  const base = overlay?.dataset.base ?? '/';
+  const scope = overlay?.dataset.scope ?? 'site';
+  const scopePrefix = overlay?.dataset.scopePrefix ?? '';
+
+  let pagefind: PagefindApi | null = null;
+  let pagefindReady: Promise<void> | null = null;
+  let currentQuery = '';
+
+  // Uses an indirect dynamic import (via `Function`) so Vite's build-time
+  // import analysis never sees this as a bundlable specifier — pagefind.js
+  // is only ever available at runtime in `dist/pagefind`, not part of the build.
+  const dynamicImport = new Function('specifier', 'return import(specifier)') as (
+    specifier: string
+  ) => Promise<unknown>;
+
+  function loadPagefind(): Promise<void> {
+    if (!pagefindReady) {
+      pagefindReady = (async () => {
+        const url = new URL(`${base}pagefind/pagefind.js`, window.location.origin).toString();
+        pagefind = (await dynamicImport(url)) as PagefindApi;
+        await pagefind.init();
+      })();
+    }
+    return pagefindReady;
+  }
+
+  function normalizePath(path: string): string {
+    return path.length > 1 ? path.replace(/\/$/, '') : path;
+  }
+
+  function matchesScope(url: string): boolean {
+    if (scope === 'site') return true;
+    const path = normalizePath(new URL(url, window.location.origin).pathname);
+    const currentPath = normalizePath(window.location.pathname);
+    if (scope === 'page') return path === currentPath;
+    if (scope === 'section') {
+      const prefix = normalizePath(`${base}${scopePrefix}`);
+      return path === prefix || path.startsWith(`${prefix}/`);
+    }
+    return true;
+  }
+
+  function setMessage(text: string) {
+    if (!messageEl) return;
+    messageEl.textContent = text;
+    messageEl.hidden = text.length === 0;
+  }
+
+  function renderResults(items: PagefindResultData[]) {
+    if (!resultsEl) return;
+    resultsEl.replaceChildren();
+
+    for (const item of items) {
+      const li = document.createElement('li');
+      li.className = 'search-result';
+
+      const link = document.createElement('a');
+      link.className = 'search-result-title';
+      link.href = item.url;
+      link.textContent = item.meta.title ?? item.url;
+      li.appendChild(link);
+
+      const excerpt = document.createElement('p');
+      excerpt.className = 'search-result-excerpt';
+      excerpt.innerHTML = item.excerpt;
+      li.appendChild(excerpt);
+
+      resultsEl.appendChild(li);
+
+      // Pagefind splits headed sections into sub_results with their own
+      // anchored URL — link to those directly so results jump to the
+      // matching section instead of always landing at the top of the page.
+      const subResults = item.sub_results.filter((sub) => sub.url !== item.url);
+      if (subResults.length > 0) {
+        const subList = document.createElement('ul');
+        subList.className = 'search-subresults';
+
+        for (const sub of subResults.slice(0, 3)) {
+          const subLi = document.createElement('li');
+          subLi.className = 'search-subresult';
+
+          const subLink = document.createElement('a');
+          subLink.className = 'search-subresult-title';
+          subLink.href = sub.url;
+          subLink.textContent = sub.title;
+          subLi.appendChild(subLink);
+
+          const subExcerpt = document.createElement('p');
+          subExcerpt.className = 'search-result-excerpt';
+          subExcerpt.innerHTML = sub.excerpt;
+          subLi.appendChild(subExcerpt);
+
+          subList.appendChild(subLi);
+        }
+
+        li.appendChild(subList);
+      }
+    }
+  }
+
+  async function runSearch(query: string) {
+    currentQuery = query;
+
+    if (!query.trim()) {
+      setMessage('');
+      resultsEl?.replaceChildren();
+      return;
+    }
+
+    await loadPagefind();
+    if (!pagefind) return;
+
+    const search = await pagefind.debouncedSearch(query);
+    if (search === null || query !== currentQuery) return;
+
+    const allData = await Promise.all(search.results.map((result) => result.data()));
+    if (query !== currentQuery) return;
+
+    console.log('[search debug] scope:', scope, 'scopePrefix:', scopePrefix, 'base:', base);
+    console.log('[search debug] raw result urls:', allData.map((item) => item.url));
+
+    const data = allData.filter((item) => matchesScope(item.url)).slice(0, 20);
+
+    console.log('[search debug] after scope filter:', data.map((item) => item.url));
+
+    if (data.length === 0) {
+      setMessage('No results found.');
+      resultsEl?.replaceChildren();
+      return;
+    }
+
+    setMessage('');
+    renderResults(data);
+  }
+
+  async function openSearch() {
+    if (!overlay) return;
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    await loadPagefind();
+    input?.focus();
+  }
+
+  function closeSearch() {
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  trigger?.addEventListener('click', openSearch);
+  closeBtn?.addEventListener('click', closeSearch);
+  overlay?.addEventListener('click', (event) => {
+    if (event.target === overlay) closeSearch();
+  });
+  input?.addEventListener('input', () => {
+    void runSearch(input.value);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && overlay && !overlay.hidden) closeSearch();
+    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      event.preventDefault();
+      void openSearch();
+    }
+  });
+</script>

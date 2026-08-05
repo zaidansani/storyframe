@@ -2,6 +2,7 @@
 import { Font } from 'astro:assets';
 import CodeBlock from '@/components/containers/CodeBlock.astro';
 import Footer from '@/components/Footer.astro';
+import Search from '@/components/Search.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import Hero from '@/components/sections/Hero.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
@@ -60,6 +61,7 @@ const { title, description, date, author, read_duration } = Astro.props;
   </head>
   <body>
     <ThemeToggle />
+    <Search scope="page" />
     <TableOfContents />
     <main>
       <Hero title={title} description={description} date={date} author={author} read_duration={read_duration} />

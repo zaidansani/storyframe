@@ -1,0 +1,86 @@
+---
+title: "Writing a New Article"
+description: How to add a new page — frontmatter, file placement, folder listings, and the markdown extensions available in the body.
+---
+
+# Introduction
+
+Every page on the site, whether part of `articles`, `reports`, `notes`, `docs` are stored as one `.md` or `.mdx` file under `src/content/pages/`, loaded by the `pages` collection
+defined in `src/content.config.mjs`.
+
+# Where to put the file
+
+The file's path relative to `src/content/pages/` becomes its URL. Create a
+new folder for a new section, or drop a file into an existing one:
+
+```
+src/content/pages/articles/my-new-article.mdx   →  /articles/my-new-article
+src/content/pages/docs/writing-an-article.mdx    →  /docs/writing-an-article
+```
+
+Visiting a folder itself (e.g. `/articles`) renders an auto-generated
+listing of its pages and subfolders — see `src/pages/[...folder]/index.astro`
+and `src/lib/content/page-tree.ts`.
+
+# Frontmatter
+
+Every page needs frontmatter matching the `pages` schema in
+`src/content.config.mjs`:
+
+| Field           | Type     | Required | Description                                      |
+| --------------- | -------- | -------- | ------------------------------------------------ |
+| `title`         | `string` | yes      | Page title — used as the `<h1>` and in listings  |
+| `description`   | `string` | no       | Shown as a lead paragraph and in folder listings |
+| `date`          | `Date`   | no       | Shown in the byline and folder listings          |
+| `author`        | `string` | no       | Shown in the byline and folder listings          |
+| `read_duration` | `number` | no       | Shown as "N min read" in the byline              |
+
+```mdx
+---
+title: "My New Article"
+description: "A one-line summary shown in listings."
+date: 2026-08-05
+author: "Jane Doe"
+read_duration: 6
+---
+```
+
+These fields populate the `Hero` section automatically — see
+[Section Components](/docs/components/sections).
+
+# Structuring the body
+
+Start each top-level section with a `# Heading`. `src/lib/markdown/rehype-sectionize.mjs`
+wraps everything under each `h1` into its own `<section class="article-section">`,
+which is what powers the fade-in-on-scroll behavior and the
+`TableOfContents` component (auto-generated from your `h1`s — no
+configuration needed).
+
+# Markdown extensions
+
+A few features work through custom markdown syntax rather than a component
+tag — see [Container Components](/docs/components/containers) for the full
+writeup of each:
+
+- **Callouts** — a blockquote starting with `[!type]`, e.g. `> [!tip] Heads up`
+- **Sidenotes** — `^[note text]` inline, turned into a numbered, expandable reference
+- **Code blocks** — any ` ``` ` fence automatically gets a copy-to-clipboard button
+
+# Components
+
+Anything registered in `src/lib/content/section-registry.ts` can be used as
+a tag directly in the body, no import needed:
+
+- [Chart Components](/docs/components/charts) — `BarChart`, `LineChart`, `PieChart`, and more
+- [Question Components](/docs/components/questions) — `MultipleChoice`, `MultipleResponse`, `FillInTheBlank`
+- [Container Components](/docs/components/containers) — `Accordion`, `Tabs`, `Carousel`, and more
+
+To add a new one, build the `.astro` component, import and add it to the
+`sectionRegistry` object, and it becomes available in every page's body.
+
+# Examples
+
+Navigate to
+
+- `samples/sample-note` for a sample study note, with question components
+- `samples/sample-report` for a sample business report with graphs
