@@ -30,6 +30,16 @@
 .page-row h2 {
     font-family: var(--font-main-heading);
     margin: 0 0 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-row-icon {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+    color: var(--color-accent);
 }
 
 .page-description {

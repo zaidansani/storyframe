@@ -1,19 +1,20 @@
 ---
-title: "Component Reference"
-description: A catalog of every interactive component available in articles — charts and question types — with their params and a live sample of each.
+title: "Chart Components"
+description: A catalog of every chart type available in articles, with their params and a live sample of each.
 ---
 
-# Introduction to charts
+# Introduction
 
 All charts live in `src/components/charts/` and share `title` and `height`
 (pixels, default `320`) props. They render into a `<canvas>` via Chart.js,
 queued through `window.__chartQueue` and drawn client-side by
-`src/lib/chart-client.ts`.
+`src/lib/charts/chart-client.ts`. Series colors come from the
+`--chart-series-*` CSS variables — see [Theming](/docs/theming).
 
 # BarChart
 
 | Param      | Type                                  | Required | Description                       |
-| ---------- | ------------------------------------- | -------- | --------------------------------- |
+| ---------- | ------------------------------------- | -------- | ---------------------------------- |
 | `title`    | `string`                              | no       | Caption shown above the chart     |
 | `labels`   | `string[]`                            | yes      | X-axis category labels            |
 | `datasets` | `{ label: string; data: number[] }[]` | yes      | One or more bar series            |
@@ -36,7 +37,7 @@ queued through `window.__chartQueue` and drawn client-side by
 # LineChart
 
 | Param      | Type                                                  | Required | Description                       |
-| ---------- | ----------------------------------------------------- | -------- | --------------------------------- |
+| ---------- | ----------------------------------------------------- | -------- | ---------------------------------- |
 | `title`    | `string`                                              | no       | Caption shown above the chart     |
 | `labels`   | `string[]`                                            | yes      | X-axis category labels            |
 | `datasets` | `{ label: string; data: number[]; fill?: boolean }[]` | yes      | One or more line series           |
@@ -59,7 +60,7 @@ queued through `window.__chartQueue` and drawn client-side by
 # PieChart
 
 | Param    | Type       | Required | Description                       |
-| -------- | ---------- | -------- | --------------------------------- |
+| -------- | ---------- | -------- | ---------------------------------- |
 | `title`  | `string`   | no       | Caption shown above the chart     |
 | `label`  | `string`   | no       | Series label (used in tooltips)   |
 | `labels` | `string[]` | yes      | Slice labels                      |
@@ -85,7 +86,7 @@ queued through `window.__chartQueue` and drawn client-side by
 # DoughnutChart
 
 | Param    | Type       | Required | Description                       |
-| -------- | ---------- | -------- | --------------------------------- |
+| -------- | ---------- | -------- | ---------------------------------- |
 | `title`  | `string`   | no       | Caption shown above the chart     |
 | `label`  | `string`   | no       | Series label (used in tooltips)   |
 | `labels` | `string[]` | yes      | Slice labels                      |
@@ -111,7 +112,7 @@ queued through `window.__chartQueue` and drawn client-side by
 # RadarChart
 
 | Param      | Type                                                  | Required | Description                       |
-| ---------- | ----------------------------------------------------- | -------- | --------------------------------- |
+| ---------- | ----------------------------------------------------- | -------- | ---------------------------------- |
 | `title`    | `string`                                              | no       | Caption shown above the chart     |
 | `labels`   | `string[]`                                            | yes      | Axis labels                       |
 | `datasets` | `{ label: string; data: number[]; fill?: boolean }[]` | yes      | One or more series                |
@@ -140,7 +141,7 @@ queued through `window.__chartQueue` and drawn client-side by
 # PolarAreaChart
 
 | Param    | Type       | Required | Description                       |
-| -------- | ---------- | -------- | --------------------------------- |
+| -------- | ---------- | -------- | ---------------------------------- |
 | `title`  | `string`   | no       | Caption shown above the chart     |
 | `label`  | `string`   | no       | Series label (used in tooltips)   |
 | `labels` | `string[]` | yes      | Slice labels                      |
@@ -166,7 +167,7 @@ queued through `window.__chartQueue` and drawn client-side by
 # ScatterChart
 
 | Param      | Type                                                    | Required | Description                       |
-| ---------- | ------------------------------------------------------- | -------- | --------------------------------- |
+| ---------- | ------------------------------------------------------- | -------- | ---------------------------------- |
 | `title`    | `string`                                                | no       | Caption shown above the chart     |
 | `datasets` | `{ label: string; data: { x: number; y: number }[] }[]` | yes      | One or more point series          |
 | `height`   | `number`                                                | no       | Canvas height in px (default 320) |
@@ -206,7 +207,7 @@ queued through `window.__chartQueue` and drawn client-side by
 # BubbleChart
 
 | Param      | Type                                                               | Required | Description                               |
-| ---------- | ------------------------------------------------------------------ | -------- | ----------------------------------------- |
+| ---------- | ------------------------------------------------------------------ | -------- | ------------------------------------------ |
 | `title`    | `string`                                                           | no       | Caption shown above the chart             |
 | `datasets` | `{ label: string; data: { x: number; y: number; r: number }[] }[]` | yes      | One or more bubble series (`r` is radius) |
 | `height`   | `number`                                                           | no       | Canvas height in px (default 320)         |
@@ -238,91 +239,5 @@ queued through `window.__chartQueue` and drawn client-side by
             ],
         },
     ]}
-/>
-```
-
-# Introduction to questions
-
-All question components live in `src/components/questions/`, share a
-consistent look via `src/styles/question.css`, and are graded client-side by
-`src/lib/question-client.ts`. Every type accepts an optional `explanation`
-string shown after the question is checked.
-
-# MultipleChoice
-
-Single correct answer, selected with radio buttons.
-
-| Param         | Type       | Required | Description                                |
-| ------------- | ---------- | -------- | ------------------------------------------ |
-| `question`    | `string`   | yes      | The question prompt                        |
-| `options`     | `string[]` | yes      | The list of choices                        |
-| `answer`      | `number`   | yes      | Index into `options` of the correct choice |
-| `explanation` | `string`   | no       | Shown after the answer is checked          |
-
-<MultipleChoice
-    question="What is the capital of France?"
-    options={["Berlin", "Madrid", "Paris", "Rome"]}
-    answer={2}
-    explanation="Paris has been the capital of France since the 10th century."
-/>
-
-```mdx
-<MultipleChoice
-    question="What is the capital of France?"
-    options={["Berlin", "Madrid", "Paris", "Rome"]}
-    answer={2}
-    explanation="Paris has been the capital of France since the 10th century."
-/>
-```
-
-# MultipleResponse
-
-One or more correct answers, selected with checkboxes.
-
-| Param         | Type       | Required | Description                                   |
-| ------------- | ---------- | -------- | --------------------------------------------- |
-| `question`    | `string`   | yes      | The question prompt                           |
-| `options`     | `string[]` | yes      | The list of choices                           |
-| `answer`      | `number[]` | yes      | Indexes into `options` of all correct choices |
-| `explanation` | `string`   | no       | Shown after the answer is checked             |
-
-<MultipleResponse
-    question="Which of these are prime numbers? (select all that apply)"
-    options={["2", "4", "7", "9"]}
-    answer={[0, 2]}
-    explanation="2 and 7 are prime — 4 and 9 each have factors other than 1 and themselves."
-/>
-
-```mdx
-<MultipleResponse
-    question="Which of these are prime numbers? (select all that apply)"
-    options={["2", "4", "7", "9"]}
-    answer={[0, 2]}
-    explanation="2 and 7 are prime — 4 and 9 each have factors other than 1 and themselves."
-/>
-```
-
-# FillInTheBlank
-
-Free-text entry, checked against a list of acceptable answers.
-
-| Param           | Type       | Required | Description                                          |
-| --------------- | ---------- | -------- | ---------------------------------------------------- |
-| `question`      | `string`   | yes      | The question prompt                                  |
-| `answers`       | `string[]` | yes      | Accepted answers (any match counts as correct)       |
-| `caseSensitive` | `boolean`  | no       | Whether matching is case-sensitive (default `false`) |
-| `explanation`   | `string`   | no       | Shown after the answer is checked                    |
-
-<FillInTheBlank
-    question="The chemical symbol for gold is ______."
-    answers={["Au"]}
-    explanation="Au comes from the Latin word for gold, aurum."
-/>
-
-```mdx
-<FillInTheBlank
-    question="The chemical symbol for gold is ______."
-    answers={["Au"]}
-    explanation="Au comes from the Latin word for gold, aurum."
 />
 ```

@@ -1,0 +1,90 @@
+---
+title: "Question Components"
+description: A catalog of every interactive question type available in articles, with their params and a live sample of each.
+---
+
+# Introduction
+
+All question components live in `src/components/questions/`, share a
+consistent look via `src/styles/questions/question.css`, and are graded
+client-side by `src/lib/interactive/question-client.ts`. Every type accepts
+an optional `explanation` string shown after the question is checked.
+
+# MultipleChoice
+
+Single correct answer, selected with radio buttons.
+
+| Param         | Type       | Required | Description                                |
+| ------------- | ---------- | -------- | ------------------------------------------- |
+| `question`    | `string`   | yes      | The question prompt                        |
+| `options`     | `string[]` | yes      | The list of choices                        |
+| `answer`      | `number`   | yes      | Index into `options` of the correct choice |
+| `explanation` | `string`   | no       | Shown after the answer is checked          |
+
+<MultipleChoice
+    question="What is the capital of France?"
+    options={["Berlin", "Madrid", "Paris", "Rome"]}
+    answer={2}
+    explanation="Paris has been the capital of France since the 10th century."
+/>
+
+```mdx
+<MultipleChoice
+    question="What is the capital of France?"
+    options={["Berlin", "Madrid", "Paris", "Rome"]}
+    answer={2}
+    explanation="Paris has been the capital of France since the 10th century."
+/>
+```
+
+# MultipleResponse
+
+One or more correct answers, selected with checkboxes.
+
+| Param         | Type       | Required | Description                                   |
+| ------------- | ---------- | -------- | ----------------------------------------------- |
+| `question`    | `string`   | yes      | The question prompt                           |
+| `options`     | `string[]` | yes      | The list of choices                           |
+| `answer`      | `number[]` | yes      | Indexes into `options` of all correct choices |
+| `explanation` | `string`   | no       | Shown after the answer is checked             |
+
+<MultipleResponse
+    question="Which of these are prime numbers? (select all that apply)"
+    options={["2", "4", "7", "9"]}
+    answer={[0, 2]}
+    explanation="2 and 7 are prime — 4 and 9 each have factors other than 1 and themselves."
+/>
+
+```mdx
+<MultipleResponse
+    question="Which of these are prime numbers? (select all that apply)"
+    options={["2", "4", "7", "9"]}
+    answer={[0, 2]}
+    explanation="2 and 7 are prime — 4 and 9 each have factors other than 1 and themselves."
+/>
+```
+
+# FillInTheBlank
+
+Free-text entry, checked against a list of acceptable answers.
+
+| Param           | Type       | Required | Description                                          |
+| --------------- | ---------- | -------- | ----------------------------------------------------- |
+| `question`      | `string`   | yes      | The question prompt                                  |
+| `answers`       | `string[]` | yes      | Accepted answers (any match counts as correct)       |
+| `caseSensitive` | `boolean`  | no       | Whether matching is case-sensitive (default `false`) |
+| `explanation`   | `string`   | no       | Shown after the answer is checked                    |
+
+<FillInTheBlank
+    question="The chemical symbol for gold is ______."
+    answers={["Au"]}
+    explanation="Au comes from the Latin word for gold, aurum."
+/>
+
+```mdx
+<FillInTheBlank
+    question="The chemical symbol for gold is ______."
+    answers={["Au"]}
+    explanation="Au comes from the Latin word for gold, aurum."
+/>
+```

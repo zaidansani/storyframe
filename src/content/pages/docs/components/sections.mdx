@@ -1,0 +1,36 @@
+---
+title: "Section Components"
+description: Page-level layout sections rendered from article frontmatter, starting with Hero.
+---
+
+# Introduction
+
+Section components live in `src/components/sections/`. Unlike charts,
+questions, and containers, these aren't placed inside MDX content — they're
+rendered by `src/layouts/AppLayout.astro` directly from the page's
+frontmatter fields.
+
+# Hero
+
+Renders the article's title, description, and byline meta at the top of the
+page, styled by `src/styles/layout/hero.css`. Populated from frontmatter
+fields on the page (see the schema in `src/content.config.mjs`) — there's no
+tag to add in the article body.
+
+| Frontmatter field | Type     | Required | Description                         |
+| ------------------ | -------- | -------- | ------------------------------------ |
+| `title`             | `string` | yes      | Rendered as the `<h1>`               |
+| `description`       | `string` | no       | Shown as a lead paragraph            |
+| `date`              | `Date`   | no       | Formatted and shown in the byline    |
+| `author`            | `string` | no       | Shown in the byline                  |
+| `read_duration`     | `number` | no       | Shown as "N min read" in the byline  |
+
+```mdx
+---
+title: "My Article"
+description: "A short summary shown under the title."
+date: 2026-01-15
+author: "Jane Doe"
+read_duration: 6
+---
+```

@@ -1,0 +1,97 @@
+---
+title: "Container Components"
+description: Collapsible sections, callouts, code blocks, and sidenotes — the layout and content-wrapping features available in articles.
+---
+
+# Introduction
+
+Container components live in `src/components/containers/`. Some are
+registered in `src/lib/content/section-registry.ts` and used explicitly in
+MDX (like `Accordion`); others run automatically on every article via
+`src/layouts/AppLayout.astro` and are triggered by markdown syntax instead of
+a tag (`CodeBlock`, `Sidenotes`, and callouts).
+
+# Accordion
+
+Collapsible groups of content, defined in `src/components/containers/Accordion.astro`
+and styled in `src/styles/containers/accordion.css`. Each item's `content` is
+rendered as raw HTML, so use inline markup rather than markdown/MDX syntax.
+
+| Param           | Type                                    | Required | Description                                          |
+| --------------- | ---------------------------------------- | -------- | ------------------------------------------------------ |
+| `items`         | `{ title: string; content: string }[]`  | yes      | The list of collapsible sections                       |
+| `allowMultiple` | `boolean`                                | no       | Allow multiple items open at once (default `false`)    |
+
+<Accordion
+    items={[
+        { title: "What is this site built with?", content: "This site is built with <strong>Astro</strong> and MDX." },
+        { title: "Can I use custom components?", content: "Yes — any component registered in <code>section-registry.ts</code> is available in MDX content." },
+    ]}
+/>
+
+```mdx
+<Accordion
+    items={[
+        { title: "What is this site built with?", content: "This site is built with <strong>Astro</strong> and MDX." },
+        { title: "Can I use custom components?", content: "Yes — any component registered in <code>section-registry.ts</code> is available in MDX content." },
+    ]}
+/>
+```
+
+# Callouts
+
+Obsidian-style callouts, parsed from blockquotes by
+`src/lib/markdown/remark-callouts.mjs` (icons resolved by
+`src/lib/content/callout-icons.mjs`) and styled in
+`src/styles/containers/callout.css`. Write a blockquote starting with
+`[!type]`, optionally followed by a custom title. The type is
+case-insensitive and controls the accent color and icon; unrecognized types
+fall back to the default accent.
+
+| Type                                                   | Color  |
+| ------------------------------------------------------- | ------ |
+| `note`, `info`                                          | blue   |
+| `tip`, `hint`, `success`, `check`, `done`                | green  |
+| `question`, `help`, `faq`                                | yellow |
+| `warning`, `caution`, `attention`                        | yellow |
+| `failure`, `fail`, `missing`, `danger`, `error`, `bug`   | red    |
+| `example`                                                | purple |
+| `quote`, `cite`                                          | muted  |
+
+> [!tip] You can use a custom title
+> Callouts support **markdown** inside the body, unlike Accordion content.
+
+```mdx
+> [!tip] You can use a custom title
+> Callouts support **markdown** inside the body, unlike Accordion content.
+```
+
+> [!warning]
+> The title is optional — it defaults to the capitalized type name.
+
+```mdx
+> [!warning]
+> The title is optional — it defaults to the capitalized type name.
+```
+
+# Code blocks
+
+`src/components/containers/CodeBlock.astro` runs once per page load (mounted
+by `AppLayout.astro`) and wraps every fenced code block in
+`.article-content` with a copy-to-clipboard button, styled by
+`src/styles/containers/code-block.css`. There's no component to place — any
+` ``` ` fence in your MDX gets the button automatically.
+
+# Sidenotes
+
+`src/components/containers/Sidenotes.astro` also runs automatically on every
+page, handling the click/toggle behavior for sidenote markers (styled by
+`src/styles/containers/sidenotes.css`). The markers themselves come from
+`src/lib/markdown/remark-sidenotes.mjs`, which turns `^[note text]` inline
+syntax into a numbered, expandable reference — no component tag needed.
+
+Here's a sentence with a sidenote.^[This is the note text, revealed on click.]
+
+```mdx
+Here's a sentence with a sidenote.^[This is the note text, revealed on click.]
+```

@@ -1,5 +1,5 @@
 ---
-import "@/styles/chart.css";
+import "@/styles/charts/chart.css";
 
 interface Props {
   title?: string;
@@ -20,7 +20,7 @@ const id = `chart-${Math.random().toString(36).slice(2, 9)}`;
 </figure>
 
 <script>
-  import "@/lib/chart-client";
+  import "@/lib/charts/chart-client";
 </script>
 
 <script is:inline define:vars={{ id, labels, datasets }}>

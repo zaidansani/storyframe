@@ -1,0 +1,50 @@
+.sidenote-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+.sidenote-ref {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0.1em;
+    font: inherit;
+    color: var(--color-accent);
+    cursor: pointer;
+}
+
+.sidenote-ref sup {
+    font-weight: 700;
+}
+
+.sidenote {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 0.4rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    width: max(14rem, 40vw);
+    max-width: calc(100vw - 2 * var(--spacing));
+    padding: 0.6rem 0.75rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.sidenote-number {
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-right: 0.35em;
+}
+
+.sidenote-wrapper:hover .sidenote,
+.sidenote-wrapper:focus-within .sidenote,
+.sidenote.is-open {
+    display: block;
+}

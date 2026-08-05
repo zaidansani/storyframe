@@ -1,0 +1,63 @@
+---
+import '@/styles/containers/accordion.css';
+
+interface Item {
+  title: string;
+  content: string;
+}
+
+interface Props {
+  items: Item[];
+  allowMultiple?: boolean;
+}
+
+const { items, allowMultiple = false } = Astro.props;
+---
+
+<div class="accordion" data-accordion-root data-allow-multiple={allowMultiple}>
+  {items.map((item, index) => (
+    <div class="accordion-item">
+      <h3 class="accordion-heading">
+        <button
+          type="button"
+          class="accordion-trigger"
+          aria-expanded="false"
+          aria-controls={`accordion-panel-${index}`}
+        >
+          <span>{item.title}</span>
+          <svg class="accordion-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </h3>
+      <div id={`accordion-panel-${index}`} class="accordion-panel" role="region">
+        <div class="accordion-panel-inner" set:html={item.content} />
+      </div>
+    </div>
+  ))}
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-accordion-root]').forEach((root) => {
+    const allowMultiple = root.dataset.allowMultiple === 'true';
+    const triggers = root.querySelectorAll<HTMLButtonElement>('.accordion-trigger');
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+
+        if (!allowMultiple) {
+          triggers.forEach((other) => {
+            if (other !== trigger) {
+              other.setAttribute('aria-expanded', 'false');
+              other.closest('.accordion-item')?.classList.remove('is-open');
+            }
+          });
+        }
+
+        trigger.setAttribute('aria-expanded', String(!expanded));
+        trigger.closest('.accordion-item')?.classList.toggle('is-open', !expanded);
+      });
+    });
+  });
+</script>

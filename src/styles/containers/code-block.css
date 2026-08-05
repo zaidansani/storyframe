@@ -1,0 +1,66 @@
+.code-block {
+    position: relative;
+}
+
+.code-block pre {
+    margin: 0 0 var(--spacing);
+}
+
+.code-copy-button {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    opacity: 0;
+    transition:
+        opacity 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.code-block:hover .code-copy-button,
+.code-copy-button:focus-visible {
+    opacity: 1;
+}
+
+.code-copy-button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+}
+
+.code-copy-button.is-copied {
+    border-color: var(--question-correct, #1baf7a);
+    color: var(--question-correct, #1baf7a);
+    opacity: 1;
+}
+
+.code-copy-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.code-copy-button .icon-copy {
+    display: block;
+}
+
+.code-copy-button .icon-check {
+    display: none;
+}
+
+.code-copy-button.is-copied .icon-copy {
+    display: none;
+}
+
+.code-copy-button.is-copied .icon-check {
+    display: block;
+}

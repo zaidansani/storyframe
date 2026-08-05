@@ -9,6 +9,7 @@ import BubbleChart from "@/components/charts/BubbleChart.astro";
 import MultipleChoice from "@/components/questions/MultipleChoice.astro";
 import MultipleResponse from "@/components/questions/MultipleResponse.astro";
 import FillInTheBlank from "@/components/questions/FillInTheBlank.astro";
+import Accordion from "@/components/containers/Accordion.astro";
 
 export const sectionRegistry = {
     LineChart,
@@ -22,4 +23,5 @@ export const sectionRegistry = {
     MultipleChoice,
     MultipleResponse,
     FillInTheBlank,
+    Accordion,
 };

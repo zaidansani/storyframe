@@ -1,0 +1,33 @@
+---
+import '@/styles/containers/sidenotes.css';
+---
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-sidenote-trigger]').forEach((trigger) => {
+    const note = trigger.parentElement?.querySelector<HTMLElement>('.sidenote');
+    if (!note) return;
+
+    trigger.addEventListener('click', () => {
+      const expanded = trigger.getAttribute('aria-expanded') === 'true';
+
+      document.querySelectorAll<HTMLButtonElement>('[data-sidenote-trigger]').forEach((other) => {
+        if (other !== trigger) {
+          other.setAttribute('aria-expanded', 'false');
+          other.parentElement?.querySelector('.sidenote')?.classList.remove('is-open');
+        }
+      });
+
+      trigger.setAttribute('aria-expanded', String(!expanded));
+      note.classList.toggle('is-open', !expanded);
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (event.target instanceof Element && event.target.closest('.sidenote-wrapper')) return;
+
+    document.querySelectorAll<HTMLButtonElement>('[data-sidenote-trigger][aria-expanded="true"]').forEach((trigger) => {
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.parentElement?.querySelector('.sidenote')?.classList.remove('is-open');
+    });
+  });
+</script>
