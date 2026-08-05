@@ -1,5 +1,6 @@
 ---
 import { Icon } from 'astro-icon/components';
+import '@/styles/layout/search.css';
 
 interface Props {
   /** 'page' scopes results to exactly this URL; 'section' scopes to everything under sectionPrefix. Omit for site-wide search. */
@@ -30,9 +31,6 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
   hidden
 >
   <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
-    <button type="button" class="search-close" data-search-close aria-label="Close search">
-      <Icon name="lucide:x" />
-    </button>
     <div class="search-form">
       <Icon name="lucide:search" class="search-form-icon" />
       <input
@@ -43,6 +41,9 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
         autocomplete="off"
         spellcheck="false"
       />
+      <button type="button" class="search-close" data-search-close aria-label="Close search">
+        <Icon name="lucide:x" />
+      </button>
     </div>
     <p class="search-message" data-search-message hidden></p>
     <ul class="search-results" data-search-results></ul>
@@ -150,6 +151,35 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
       li.appendChild(excerpt);
 
       resultsEl.appendChild(li);
+
+      // Pagefind splits headed sections into sub_results with their own
+      // anchored URL — link to those directly so results jump to the
+      // matching section instead of always landing at the top of the page.
+      const subResults = item.sub_results.filter((sub) => sub.url !== item.url);
+      if (subResults.length > 0) {
+        const subList = document.createElement('ul');
+        subList.className = 'search-subresults';
+
+        for (const sub of subResults.slice(0, 3)) {
+          const subLi = document.createElement('li');
+          subLi.className = 'search-subresult';
+
+          const subLink = document.createElement('a');
+          subLink.className = 'search-subresult-title';
+          subLink.href = sub.url;
+          subLink.textContent = sub.title;
+          subLi.appendChild(subLink);
+
+          const subExcerpt = document.createElement('p');
+          subExcerpt.className = 'search-result-excerpt';
+          subExcerpt.innerHTML = sub.excerpt;
+          subLi.appendChild(subExcerpt);
+
+          subList.appendChild(subLi);
+        }
+
+        li.appendChild(subList);
+      }
     }
   }
 
@@ -171,7 +201,12 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     const allData = await Promise.all(search.results.map((result) => result.data()));
     if (query !== currentQuery) return;
 
+    console.log('[search debug] scope:', scope, 'scopePrefix:', scopePrefix, 'base:', base);
+    console.log('[search debug] raw result urls:', allData.map((item) => item.url));
+
     const data = allData.filter((item) => matchesScope(item.url)).slice(0, 20);
+
+    console.log('[search debug] after scope filter:', data.map((item) => item.url));
 
     if (data.length === 0) {
       setMessage('No results found.');
@@ -213,157 +248,3 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     }
   });
 </script>
-
-<style>
-  .search-trigger {
-    position: fixed;
-    top: 1rem;
-    right: 4.25rem;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
-    background: var(--color-bg);
-    color: var(--color-text);
-    cursor: pointer;
-  }
-
-  .search-trigger:hover {
-    border-color: var(--color-accent);
-  }
-
-  .search-trigger-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-    color: var(--color-text);
-  }
-
-  .search-overlay[hidden] {
-    display: none;
-  }
-
-  .search-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 4rem 1rem;
-    background: color-mix(in srgb, var(--color-bg) 60%, transparent);
-    backdrop-filter: blur(4px);
-  }
-
-  .search-panel {
-    position: relative;
-    width: 100%;
-    max-width: 40rem;
-    max-height: 80vh;
-    overflow-y: auto;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 1.5rem;
-  }
-
-  .search-close {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
-    background: var(--color-bg);
-    color: var(--color-text);
-    cursor: pointer;
-  }
-
-  .search-close:hover {
-    border-color: var(--color-accent);
-  }
-
-  .search-form {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  .search-form-icon {
-    position: absolute;
-    left: 0.9rem;
-    width: 1rem;
-    height: 1rem;
-    color: var(--color-text-muted);
-    pointer-events: none;
-  }
-
-  .search-input {
-    width: 100%;
-    height: 2.75rem;
-    padding: 0 0.9rem 0 2.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    background: var(--color-surface);
-    color: var(--color-text);
-    font-family: var(--font-text);
-    font-size: 1rem;
-  }
-
-  .search-input:focus {
-    outline: none;
-    border-color: var(--color-accent);
-  }
-
-  .search-message {
-    margin: 0 0 1rem;
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-  }
-
-  .search-results {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .search-result {
-    padding: 0.9rem 0;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .search-result:first-child {
-    border-top: none;
-  }
-
-  .search-result-title {
-    display: block;
-    font-weight: 700;
-    color: var(--color-text);
-    text-decoration: none;
-  }
-
-  .search-result-title:hover {
-    color: var(--color-accent);
-  }
-
-  .search-result-excerpt {
-    margin: 0.25rem 0 0;
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-  }
-
-  .search-result-excerpt :global(mark) {
-    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
-    color: var(--color-text);
-    border-radius: 2px;
-  }
-</style>
