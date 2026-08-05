@@ -201,12 +201,7 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     const allData = await Promise.all(search.results.map((result) => result.data()));
     if (query !== currentQuery) return;
 
-    console.log('[search debug] scope:', scope, 'scopePrefix:', scopePrefix, 'base:', base);
-    console.log('[search debug] raw result urls:', allData.map((item) => item.url));
-
     const data = allData.filter((item) => matchesScope(item.url)).slice(0, 20);
-
-    console.log('[search debug] after scope filter:', data.map((item) => item.url));
 
     if (data.length === 0) {
       setMessage('No results found.');
