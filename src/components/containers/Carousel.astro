@@ -1,0 +1,67 @@
+---
+import { Icon } from 'astro-icon/components';
+import '@/styles/containers/carousel.css';
+
+interface Props {
+  loop?: boolean;
+}
+
+const { loop = false } = Astro.props;
+---
+
+<div class="carousel" data-carousel-root data-loop={loop}>
+  <div class="carousel-viewport">
+    <div class="carousel-track">
+      <slot />
+    </div>
+  </div>
+  <button type="button" class="carousel-arrow carousel-arrow-prev" aria-label="Previous slide">
+    <Icon name="lucide:chevron-left" />
+  </button>
+  <button type="button" class="carousel-arrow carousel-arrow-next" aria-label="Next slide">
+    <Icon name="lucide:chevron-right" />
+  </button>
+  <div class="carousel-dots" role="tablist"></div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel-root]').forEach((root) => {
+    const loop = root.dataset.loop === 'true';
+    const track = root.querySelector<HTMLElement>('.carousel-track');
+    const slides = root.querySelectorAll<HTMLElement>(':scope > .carousel-viewport > .carousel-track > .carousel-slide');
+    const prevButton = root.querySelector<HTMLButtonElement>('.carousel-arrow-prev');
+    const nextButton = root.querySelector<HTMLButtonElement>('.carousel-arrow-next');
+    const dotsContainer = root.querySelector<HTMLElement>('.carousel-dots');
+    if (!track || slides.length === 0 || !prevButton || !nextButton || !dotsContainer) return;
+
+    let index = 0;
+
+    const dots = Array.from(slides).map((_, slideIndex) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carousel-dot';
+      dot.setAttribute('aria-label', `Go to slide ${slideIndex + 1}`);
+      dot.addEventListener('click', () => goTo(slideIndex));
+      dotsContainer.appendChild(dot);
+      return dot;
+    });
+
+    function goTo(nextIndex: number) {
+      const count = slides.length;
+      index = loop ? (nextIndex + count) % count : Math.max(0, Math.min(nextIndex, count - 1));
+
+      track!.style.transform = `translateX(-${index * 100}%)`;
+      dots.forEach((dot, dotIndex) => dot.classList.toggle('is-active', dotIndex === index));
+
+      if (!loop) {
+        prevButton!.disabled = index === 0;
+        nextButton!.disabled = index === slides.length - 1;
+      }
+    }
+
+    prevButton.addEventListener('click', () => goTo(index - 1));
+    nextButton.addEventListener('click', () => goTo(index + 1));
+
+    goTo(0);
+  });
+</script>

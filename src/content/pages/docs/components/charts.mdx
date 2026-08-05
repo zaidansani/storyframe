@@ -20,19 +20,24 @@ queued through `window.__chartQueue` and drawn client-side by
 | `datasets` | `{ label: string; data: number[] }[]` | yes      | One or more bar series            |
 | `height`   | `number`                              | no       | Canvas height in px (default 320) |
 
-<BarChart
-    title="Monthly signups"
-    labels={["Jan", "Feb", "Mar", "Apr"]}
-    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
-/>
-
-```mdx
-<BarChart
-    title="Monthly signups"
-    labels={["Jan", "Feb", "Mar", "Apr"]}
-    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <BarChart
+            title="Monthly signups"
+            labels={["Jan", "Feb", "Mar", "Apr"]}
+            datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <BarChart
+        title="Monthly signups"
+        labels={["Jan", "Feb", "Mar", "Apr"]}
+        datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+    />
+    ```
+    </Fragment>
+</Tabs>
 
 # LineChart
 
@@ -43,19 +48,24 @@ queued through `window.__chartQueue` and drawn client-side by
 | `datasets` | `{ label: string; data: number[]; fill?: boolean }[]` | yes      | One or more line series           |
 | `height`   | `number`                                              | no       | Canvas height in px (default 320) |
 
-<LineChart
-    title="Temperature over a week"
-    labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
-    datasets={[{ label: "°C", data: [18, 20, 19, 22, 24, 23, 21], fill: true }]}
-/>
-
-```mdx
-<LineChart
-    title="Temperature over a week"
-    labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
-    datasets={[{ label: "°C", data: [18, 20, 19, 22, 24, 23, 21], fill: true }]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <LineChart
+            title="Temperature over a week"
+            labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+            datasets={[{ label: "°C", data: [18, 20, 19, 22, 24, 23, 21], fill: true }]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <LineChart
+        title="Temperature over a week"
+        labels={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
+        datasets={[{ label: "°C", data: [18, 20, 19, 22, 24, 23, 21], fill: true }]}
+    />
+    ```
+    </Fragment>
+</Tabs>
 
 # PieChart
 
@@ -67,21 +77,26 @@ queued through `window.__chartQueue` and drawn client-side by
 | `data`   | `number[]` | yes      | Slice values                      |
 | `height` | `number`   | no       | Canvas height in px (default 320) |
 
-<PieChart
-    title="Traffic sources"
-    label="Sessions"
-    labels={["Organic", "Direct", "Referral"]}
-    data={[55, 30, 15]}
-/>
-
-```mdx
-<PieChart
-    title="Traffic sources"
-    label="Sessions"
-    labels={["Organic", "Direct", "Referral"]}
-    data={[55, 30, 15]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <PieChart
+            title="Traffic sources"
+            label="Sessions"
+            labels={["Organic", "Direct", "Referral"]}
+            data={[55, 30, 15]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <PieChart
+        title="Traffic sources"
+        label="Sessions"
+        labels={["Organic", "Direct", "Referral"]}
+        data={[55, 30, 15]}
+    />
+    ```
+    </Fragment>
+</Tabs>
 
 # DoughnutChart
 
@@ -93,21 +108,26 @@ queued through `window.__chartQueue` and drawn client-side by
 | `data`   | `number[]` | yes      | Slice values                      |
 | `height` | `number`   | no       | Canvas height in px (default 320) |
 
-<DoughnutChart
-    title="Device breakdown"
-    label="Users"
-    labels={["Desktop", "Mobile", "Tablet"]}
-    data={[45, 40, 15]}
-/>
-
-```mdx
-<DoughnutChart
-    title="Device breakdown"
-    label="Users"
-    labels={["Desktop", "Mobile", "Tablet"]}
-    data={[45, 40, 15]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <DoughnutChart
+            title="Device breakdown"
+            label="Users"
+            labels={["Desktop", "Mobile", "Tablet"]}
+            data={[45, 40, 15]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <DoughnutChart
+        title="Device breakdown"
+        label="Users"
+        labels={["Desktop", "Mobile", "Tablet"]}
+        data={[45, 40, 15]}
+    />
+    ```
+    </Fragment>
+</Tabs>
 
 # RadarChart
 
@@ -118,25 +138,30 @@ queued through `window.__chartQueue` and drawn client-side by
 | `datasets` | `{ label: string; data: number[]; fill?: boolean }[]` | yes      | One or more series                |
 | `height`   | `number`                                              | no       | Canvas height in px (default 320) |
 
-<RadarChart
-    title="Skill comparison"
-    labels={["Speed", "Accuracy", "Stamina", "Strength", "Agility"]}
-    datasets={[
-        { label: "Player A", data: [80, 90, 70, 60, 85] },
-        { label: "Player B", data: [65, 75, 90, 80, 70] },
-    ]}
-/>
-
-```mdx
-<RadarChart
-    title="Skill comparison"
-    labels={["Speed", "Accuracy", "Stamina", "Strength", "Agility"]}
-    datasets={[
-        { label: "Player A", data: [80, 90, 70, 60, 85] },
-        { label: "Player B", data: [65, 75, 90, 80, 70] },
-    ]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <RadarChart
+            title="Skill comparison"
+            labels={["Speed", "Accuracy", "Stamina", "Strength", "Agility"]}
+            datasets={[
+                { label: "Player A", data: [80, 90, 70, 60, 85] },
+                { label: "Player B", data: [65, 75, 90, 80, 70] },
+            ]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <RadarChart
+        title="Skill comparison"
+        labels={["Speed", "Accuracy", "Stamina", "Strength", "Agility"]}
+        datasets={[
+            { label: "Player A", data: [80, 90, 70, 60, 85] },
+            { label: "Player B", data: [65, 75, 90, 80, 70] },
+        ]}
+    />
+    ```
+    </Fragment>
+</Tabs>
 
 # PolarAreaChart
 
@@ -148,21 +173,26 @@ queued through `window.__chartQueue` and drawn client-side by
 | `data`   | `number[]` | yes      | Slice values                      |
 | `height` | `number`   | no       | Canvas height in px (default 320) |
 
-<PolarAreaChart
-    title="Category weight"
-    label="Score"
-    labels={["Design", "Engineering", "Marketing", "Sales"]}
-    data={[12, 19, 8, 15]}
-/>
-
-```mdx
-<PolarAreaChart
-    title="Category weight"
-    label="Score"
-    labels={["Design", "Engineering", "Marketing", "Sales"]}
-    data={[12, 19, 8, 15]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <PolarAreaChart
+            title="Category weight"
+            label="Score"
+            labels={["Design", "Engineering", "Marketing", "Sales"]}
+            data={[12, 19, 8, 15]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <PolarAreaChart
+        title="Category weight"
+        label="Score"
+        labels={["Design", "Engineering", "Marketing", "Sales"]}
+        data={[12, 19, 8, 15]}
+    />
+    ```
+    </Fragment>
+</Tabs>
 
 # ScatterChart
 
@@ -172,37 +202,42 @@ queued through `window.__chartQueue` and drawn client-side by
 | `datasets` | `{ label: string; data: { x: number; y: number }[] }[]` | yes      | One or more point series          |
 | `height`   | `number`                                                | no       | Canvas height in px (default 320) |
 
-<ScatterChart
-    title="Height vs. weight"
-    datasets={[
-        {
-            label: "Sample",
-            data: [
-                { x: 160, y: 55 },
-                { x: 170, y: 65 },
-                { x: 180, y: 75 },
-                { x: 190, y: 90 },
-            ],
-        },
-    ]}
-/>
-
-```mdx
-<ScatterChart
-    title="Height vs. weight"
-    datasets={[
-        {
-            label: "Sample",
-            data: [
-                { x: 160, y: 55 },
-                { x: 170, y: 65 },
-                { x: 180, y: 75 },
-                { x: 190, y: 90 },
-            ],
-        },
-    ]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <ScatterChart
+            title="Height vs. weight"
+            datasets={[
+                {
+                    label: "Sample",
+                    data: [
+                        { x: 160, y: 55 },
+                        { x: 170, y: 65 },
+                        { x: 180, y: 75 },
+                        { x: 190, y: 90 },
+                    ],
+                },
+            ]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <ScatterChart
+        title="Height vs. weight"
+        datasets={[
+            {
+                label: "Sample",
+                data: [
+                    { x: 160, y: 55 },
+                    { x: 170, y: 65 },
+                    { x: 180, y: 75 },
+                    { x: 190, y: 90 },
+                ],
+            },
+        ]}
+    />
+    ```
+    </Fragment>
+</Tabs>
 
 # BubbleChart
 
@@ -212,32 +247,37 @@ queued through `window.__chartQueue` and drawn client-side by
 | `datasets` | `{ label: string; data: { x: number; y: number; r: number }[] }[]` | yes      | One or more bubble series (`r` is radius) |
 | `height`   | `number`                                                           | no       | Canvas height in px (default 320)         |
 
-<BubbleChart
-    title="Market segments"
-    datasets={[
-        {
-            label: "Segments",
-            data: [
-                { x: 20, y: 30, r: 10 },
-                { x: 40, y: 10, r: 20 },
-                { x: 60, y: 50, r: 15 },
-            ],
-        },
-    ]}
-/>
-
-```mdx
-<BubbleChart
-    title="Market segments"
-    datasets={[
-        {
-            label: "Segments",
-            data: [
-                { x: 20, y: 30, r: 10 },
-                { x: 40, y: 10, r: 20 },
-                { x: 60, y: 50, r: 15 },
-            ],
-        },
-    ]}
-/>
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <BubbleChart
+            title="Market segments"
+            datasets={[
+                {
+                    label: "Segments",
+                    data: [
+                        { x: 20, y: 30, r: 10 },
+                        { x: 40, y: 10, r: 20 },
+                        { x: 60, y: 50, r: 15 },
+                    ],
+                },
+            ]}
+        />
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    <BubbleChart
+        title="Market segments"
+        datasets={[
+            {
+                label: "Segments",
+                data: [
+                    { x: 20, y: 30, r: 10 },
+                    { x: 40, y: 10, r: 20 },
+                    { x: 60, y: 50, r: 15 },
+                ],
+            },
+        ]}
+    />
+    ```
+    </Fragment>
+</Tabs>

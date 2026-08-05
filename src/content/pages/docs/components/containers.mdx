@@ -13,30 +13,167 @@ a tag (`CodeBlock`, `Sidenotes`, and callouts).
 
 # Accordion
 
-Collapsible groups of content, defined in `src/components/containers/Accordion.astro`
-and styled in `src/styles/containers/accordion.css`. Each item's `content` is
-rendered as raw HTML, so use inline markup rather than markdown/MDX syntax.
+Collapsible groups of content, built from four components in
+`src/components/containers/` and styled in `src/styles/containers/accordion.css`:
+`Accordion` (the root), `AccordionItem` (one collapsible section),
+`AccordionTitle`, and `AccordionContent`. Because content is passed as
+regular children rather than a data prop, you can nest any MDX or Astro
+content — including other components like charts — inside `AccordionContent`.
 
-| Param           | Type                                    | Required | Description                                          |
-| --------------- | ---------------------------------------- | -------- | ------------------------------------------------------ |
-| `items`         | `{ title: string; content: string }[]`  | yes      | The list of collapsible sections                       |
-| `allowMultiple` | `boolean`                                | no       | Allow multiple items open at once (default `false`)    |
+| Component          | Prop            | Type      | Required | Description                                         |
+| ------------------ | --------------- | --------- | -------- | --------------------------------------------------- |
+| `Accordion`        | `allowMultiple` | `boolean` | no       | Allow multiple items open at once (default `false`) |
+| `AccordionItem`    | —               | —         | —        | Wraps one title/content pair                        |
+| `AccordionTitle`   | —               | —         | —        | The clickable heading                               |
+| `AccordionContent` | —               | —         | —        | The collapsible body                                |
 
-<Accordion
-    items={[
-        { title: "What is this site built with?", content: "This site is built with <strong>Astro</strong> and MDX." },
-        { title: "Can I use custom components?", content: "Yes — any component registered in <code>section-registry.ts</code> is available in MDX content." },
-    ]}
-/>
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <Accordion>
+            <AccordionItem>
+                <AccordionTitle>What is this site built with?</AccordionTitle>
+                <AccordionContent>
+                    This site is built with **Astro** and MDX.
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem>
+                <AccordionTitle>Can I nest components?</AccordionTitle>
+                <AccordionContent>
+                    Yes — any component registered in `section-registry.ts` can
+                    go inside `AccordionContent`, for example:
+                    <BarChart
+                        title="Monthly signups"
+                        labels={["Jan", "Feb", "Mar", "Apr"]}
+                        datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+                    />
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
+    </Fragment>
+    <Fragment slot="tab-1">
+        ```mdx
+        <Accordion>
+            <AccordionItem>
+                <AccordionTitle>What is this site built with?</AccordionTitle>
+                <AccordionContent>
+                    This site is built with **Astro** and MDX.
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem>
+                <AccordionTitle>Can I nest components?</AccordionTitle>
+                <AccordionContent>
+                    Yes — any component registered in `section-registry.ts` can
+                    go inside `AccordionContent`, for example:
+                    <BarChart
+                        title="Monthly signups"
+                        labels={["Jan", "Feb", "Mar", "Apr"]}
+                        datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+                    />
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
+        ```
+    </Fragment>
+</Tabs>
 
-```mdx
-<Accordion
-    items={[
-        { title: "What is this site built with?", content: "This site is built with <strong>Astro</strong> and MDX." },
-        { title: "Can I use custom components?", content: "Yes — any component registered in <code>section-registry.ts</code> is available in MDX content." },
-    ]}
-/>
-```
+# Tabs
+
+Switchable panels, defined in `src/components/containers/Tabs.astro` and
+styled in `src/styles/containers/tabs.css`. Unlike `Accordion`, panel content
+is passed as named slots (`tab-0`, `tab-1`, ...) rather than an HTML string,
+so you can nest real components — including charts — inside a tab.
+
+| Param    | Type       | Required | Description          |
+| -------- | ---------- | -------- | -------------------- |
+| `labels` | `string[]` | yes      | Tab labels, in order |
+
+Slot names correspond to each label's index (`tab-0` for the first label,
+`tab-1` for the second, and so on).
+
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <Tabs labels={["Overview", "Chart"]}>
+            <Fragment slot="tab-0">
+                This panel is plain MDX content — **markdown** works here.
+            </Fragment>
+            <Fragment slot="tab-1">
+                <BarChart
+                    title="Monthly signups"
+                    labels={["Jan", "Feb", "Mar", "Apr"]}
+                    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+                />
+            </Fragment>
+        </Tabs>
+    </Fragment>
+    <Fragment slot="tab-1">
+        ```mdx
+        <Tabs labels={["Overview", "Chart"]}>
+            <Fragment slot="tab-0">
+                This panel is plain MDX content — **markdown** works here.
+            </Fragment>
+            <Fragment slot="tab-1">
+                <BarChart
+                    title="Monthly signups"
+                    labels={["Jan", "Feb", "Mar", "Apr"]}
+                    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+                />
+            </Fragment>
+        </Tabs>
+        ```
+    </Fragment>
+</Tabs>
+
+# Carousel
+
+A slideshow with arrow and dot navigation, built from `Carousel` (the root)
+and `CarouselSlide` (one slide) in `src/components/containers/`, styled in
+`src/styles/containers/carousel.css`. Like `Accordion`, slides are passed as
+regular children, so anything — including charts — can go inside a
+`CarouselSlide`.
+
+| Component       | Prop   | Type      | Required | Description                                             |
+| --------------- | ------ | --------- | -------- | ------------------------------------------------------- |
+| `Carousel`      | `loop` | `boolean` | no       | Wrap from the last slide to the first (default `false`) |
+| `CarouselSlide` | —      | —         | —        | One slide's content                                     |
+
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        <Carousel>
+            <CarouselSlide>
+                This site is built with **Astro** and MDX.
+            </CarouselSlide>
+            <CarouselSlide>
+                <BarChart
+                    title="Monthly signups"
+                    labels={["Jan", "Feb", "Mar", "Apr"]}
+                    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+                />
+            </CarouselSlide>
+            <CarouselSlide>
+                Any component registered in `section-registry.ts` can go here.
+            </CarouselSlide>
+        </Carousel>
+    </Fragment>
+    <Fragment slot="tab-1">
+        ```mdx
+        <Carousel>
+            <CarouselSlide>
+                This site is built with **Astro** and MDX.
+            </CarouselSlide>
+            <CarouselSlide>
+                <BarChart
+                    title="Monthly signups"
+                    labels={["Jan", "Feb", "Mar", "Apr"]}
+                    datasets={[{ label: "Signups", data: [12, 19, 8, 25] }]}
+                />
+            </CarouselSlide>
+            <CarouselSlide>
+                Any component registered in `section-registry.ts` can go here.
+            </CarouselSlide>
+        </Carousel>
+        ```
+    </Fragment>
+</Tabs>
 
 # Callouts
 
@@ -49,30 +186,40 @@ case-insensitive and controls the accent color and icon; unrecognized types
 fall back to the default accent.
 
 | Type                                                   | Color  |
-| ------------------------------------------------------- | ------ |
-| `note`, `info`                                          | blue   |
-| `tip`, `hint`, `success`, `check`, `done`                | green  |
-| `question`, `help`, `faq`                                | yellow |
-| `warning`, `caution`, `attention`                        | yellow |
-| `failure`, `fail`, `missing`, `danger`, `error`, `bug`   | red    |
-| `example`                                                | purple |
-| `quote`, `cite`                                          | muted  |
+| ------------------------------------------------------ | ------ |
+| `note`, `info`                                         | blue   |
+| `tip`, `hint`, `success`, `check`, `done`              | green  |
+| `question`, `help`, `faq`                              | yellow |
+| `warning`, `caution`, `attention`                      | yellow |
+| `failure`, `fail`, `missing`, `danger`, `error`, `bug` | red    |
+| `example`                                              | purple |
+| `quote`, `cite`                                        | muted  |
 
-> [!tip] You can use a custom title
-> Callouts support **markdown** inside the body, unlike Accordion content.
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        > [!tip] You can use a custom title
+        > Callouts support **markdown** inside the body, unlike Accordion content.
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    > [!tip] You can use a custom title
+    > Callouts support **markdown** inside the body, unlike Accordion content.
+    ```
+    </Fragment>
+</Tabs>
 
-```mdx
-> [!tip] You can use a custom title
-> Callouts support **markdown** inside the body, unlike Accordion content.
-```
-
-> [!warning]
-> The title is optional — it defaults to the capitalized type name.
-
-```mdx
-> [!warning]
-> The title is optional — it defaults to the capitalized type name.
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        > [!warning]
+        > The title is optional — it defaults to the capitalized type name.
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    > [!warning]
+    > The title is optional — it defaults to the capitalized type name.
+    ```
+    </Fragment>
+</Tabs>
 
 # Code blocks
 
@@ -82,6 +229,27 @@ by `AppLayout.astro`) and wraps every fenced code block in
 `src/styles/containers/code-block.css`. There's no component to place — any
 ` ``` ` fence in your MDX gets the button automatically.
 
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        ```python
+        def hello():
+            print("Hello world")
+
+        hello()
+        ```
+    </Fragment>
+    <Fragment slot="tab-1">
+    ````mdx
+    ```python
+    def hello():
+        print("Hello world")
+
+    hello()
+    ```
+    ````
+    </Fragment>
+</Tabs>
+
 # Sidenotes
 
 `src/components/containers/Sidenotes.astro` also runs automatically on every
@@ -90,8 +258,14 @@ page, handling the click/toggle behavior for sidenote markers (styled by
 `src/lib/markdown/remark-sidenotes.mjs`, which turns `^[note text]` inline
 syntax into a numbered, expandable reference — no component tag needed.
 
-Here's a sentence with a sidenote.^[This is the note text, revealed on click.]
-
-```mdx
-Here's a sentence with a sidenote.^[This is the note text, revealed on click.]
-```
+<Tabs labels={["Display", "Code"]}>
+    <Fragment slot="tab-0">
+        Here's a sentence with a sidenote.^[This is the note text, revealed on
+        click.]
+    </Fragment>
+    <Fragment slot="tab-1">
+    ```mdx
+    Here's a sentence with a sidenote.^[This is the note text, revealed on click.]
+    ```
+    </Fragment>
+</Tabs>
