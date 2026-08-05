@@ -37,7 +37,11 @@ import '@/styles/layout/table-of-contents.css';
       link.addEventListener('click', () => scrollToHeading(heading));
       li.appendChild(link);
       list.appendChild(li);
-      return { heading, link };
+      // Sections are scroll-snap-align: start, so a section's own top is the
+      // resting scroll position once snapped there — unlike its heading,
+      // which sits wherever the section's vertical centering puts it.
+      const section = heading.closest<HTMLElement>('.article-section') ?? heading;
+      return { section, link };
     });
 
     const articleContent = document.querySelector<HTMLElement>('.article-content');
@@ -47,10 +51,10 @@ import '@/styles/layout/table-of-contents.css';
         nav.classList.toggle('is-visible', window.scrollY >= documentTop(articleContent));
       }
 
-      const activeOffset = window.scrollY + window.innerHeight * 0.3;
+      const activeOffset = window.scrollY + window.innerHeight * 0.5;
       let activeIndex = 0;
-      items.forEach(({ heading }, index) => {
-        if (documentTop(heading) <= activeOffset) activeIndex = index;
+      items.forEach(({ section }, index) => {
+        if (documentTop(section) <= activeOffset) activeIndex = index;
       });
       items.forEach(({ link }, index) => {
         link.classList.toggle('is-active', index === activeIndex);
