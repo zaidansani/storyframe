@@ -1,5 +1,6 @@
 ---
 import Footer from '@/components/Footer.astro';
+import Search from '@/components/Search.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import { getAllFolders, getFolderContents } from '@/lib/content/page-tree';
 import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
@@ -23,6 +24,7 @@ export async function getStaticPaths() {
 const { folder, pages } = Astro.props;
 const { subfolders, pages: folderPages } = getFolderContents(pages, folder);
 const title = folder.split('/').pop();
+const topLevelFolder = folder.split('/')[0];
 ---
 
 <!doctype html>
@@ -37,6 +39,7 @@ const title = folder.split('/').pop();
   </head>
   <body>
     <ThemeToggle/>
+    <Search scope="section" sectionPrefix={topLevelFolder} />
     <main class="page-list">
       {subfolders.map((subfolder) => (
         <button type="button" class="page-row page-row-folder" onclick={`window.location.href='${withBase(`${folder}/${subfolder}`)}'`}>

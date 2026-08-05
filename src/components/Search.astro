@@ -1,0 +1,369 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  /** 'page' scopes results to exactly this URL; 'section' scopes to everything under sectionPrefix. Omit for site-wide search. */
+  scope?: 'page' | 'section';
+  /** Required when scope is 'section' — a base-relative path segment, e.g. "docs" or "articles". */
+  sectionPrefix?: string;
+}
+
+const { scope, sectionPrefix } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<button
+  type="button"
+  class="search-trigger"
+  data-search-trigger
+  aria-label="Search"
+>
+  <Icon name="lucide:search" class="search-trigger-icon" />
+</button>
+
+<div
+  class="search-overlay"
+  data-search-overlay
+  data-base={base}
+  data-scope={scope ?? 'site'}
+  data-scope-prefix={sectionPrefix ?? ''}
+  hidden
+>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search">
+    <button type="button" class="search-close" data-search-close aria-label="Close search">
+      <Icon name="lucide:x" />
+    </button>
+    <div class="search-form">
+      <Icon name="lucide:search" class="search-form-icon" />
+      <input
+        type="text"
+        class="search-input"
+        data-search-input
+        placeholder="Search..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+    <p class="search-message" data-search-message hidden></p>
+    <ul class="search-results" data-search-results></ul>
+  </div>
+</div>
+
+<script>
+  interface PagefindSubResult {
+    title: string;
+    url: string;
+    excerpt: string;
+  }
+
+  interface PagefindResultData {
+    url: string;
+    meta: { title?: string };
+    excerpt: string;
+    sub_results: PagefindSubResult[];
+  }
+
+  interface PagefindResult {
+    id: string;
+    data: () => Promise<PagefindResultData>;
+  }
+
+  interface PagefindApi {
+    init: () => Promise<void>;
+    debouncedSearch: (
+      query: string
+    ) => Promise<{ results: PagefindResult[] } | null>;
+  }
+
+  const trigger = document.querySelector<HTMLButtonElement>('[data-search-trigger]');
+  const overlay = document.querySelector<HTMLDivElement>('[data-search-overlay]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-search-close]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const resultsEl = document.querySelector<HTMLUListElement>('[data-search-results]');
+  const messageEl = document.querySelector<HTMLParagraphElement>('[data-search-message]');
+
+  const base = overlay?.dataset.base ?? '/';
+  const scope = overlay?.dataset.scope ?? 'site';
+  const scopePrefix = overlay?.dataset.scopePrefix ?? '';
+
+  let pagefind: PagefindApi | null = null;
+  let pagefindReady: Promise<void> | null = null;
+  let currentQuery = '';
+
+  // Uses an indirect dynamic import (via `Function`) so Vite's build-time
+  // import analysis never sees this as a bundlable specifier — pagefind.js
+  // is only ever available at runtime in `dist/pagefind`, not part of the build.
+  const dynamicImport = new Function('specifier', 'return import(specifier)') as (
+    specifier: string
+  ) => Promise<unknown>;
+
+  function loadPagefind(): Promise<void> {
+    if (!pagefindReady) {
+      pagefindReady = (async () => {
+        const url = new URL(`${base}pagefind/pagefind.js`, window.location.origin).toString();
+        pagefind = (await dynamicImport(url)) as PagefindApi;
+        await pagefind.init();
+      })();
+    }
+    return pagefindReady;
+  }
+
+  function normalizePath(path: string): string {
+    return path.length > 1 ? path.replace(/\/$/, '') : path;
+  }
+
+  function matchesScope(url: string): boolean {
+    if (scope === 'site') return true;
+    const path = normalizePath(new URL(url, window.location.origin).pathname);
+    const currentPath = normalizePath(window.location.pathname);
+    if (scope === 'page') return path === currentPath;
+    if (scope === 'section') {
+      const prefix = normalizePath(`${base}${scopePrefix}`);
+      return path === prefix || path.startsWith(`${prefix}/`);
+    }
+    return true;
+  }
+
+  function setMessage(text: string) {
+    if (!messageEl) return;
+    messageEl.textContent = text;
+    messageEl.hidden = text.length === 0;
+  }
+
+  function renderResults(items: PagefindResultData[]) {
+    if (!resultsEl) return;
+    resultsEl.replaceChildren();
+
+    for (const item of items) {
+      const li = document.createElement('li');
+      li.className = 'search-result';
+
+      const link = document.createElement('a');
+      link.className = 'search-result-title';
+      link.href = item.url;
+      link.textContent = item.meta.title ?? item.url;
+      li.appendChild(link);
+
+      const excerpt = document.createElement('p');
+      excerpt.className = 'search-result-excerpt';
+      excerpt.innerHTML = item.excerpt;
+      li.appendChild(excerpt);
+
+      resultsEl.appendChild(li);
+    }
+  }
+
+  async function runSearch(query: string) {
+    currentQuery = query;
+
+    if (!query.trim()) {
+      setMessage('');
+      resultsEl?.replaceChildren();
+      return;
+    }
+
+    await loadPagefind();
+    if (!pagefind) return;
+
+    const search = await pagefind.debouncedSearch(query);
+    if (search === null || query !== currentQuery) return;
+
+    const allData = await Promise.all(search.results.map((result) => result.data()));
+    if (query !== currentQuery) return;
+
+    const data = allData.filter((item) => matchesScope(item.url)).slice(0, 20);
+
+    if (data.length === 0) {
+      setMessage('No results found.');
+      resultsEl?.replaceChildren();
+      return;
+    }
+
+    setMessage('');
+    renderResults(data);
+  }
+
+  async function openSearch() {
+    if (!overlay) return;
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    await loadPagefind();
+    input?.focus();
+  }
+
+  function closeSearch() {
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  trigger?.addEventListener('click', openSearch);
+  closeBtn?.addEventListener('click', closeSearch);
+  overlay?.addEventListener('click', (event) => {
+    if (event.target === overlay) closeSearch();
+  });
+  input?.addEventListener('input', () => {
+    void runSearch(input.value);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && overlay && !overlay.hidden) closeSearch();
+    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      event.preventDefault();
+      void openSearch();
+    }
+  });
+</script>
+
+<style>
+  .search-trigger {
+    position: fixed;
+    top: 1rem;
+    right: 4.25rem;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .search-trigger:hover {
+    border-color: var(--color-accent);
+  }
+
+  .search-trigger-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--color-text);
+  }
+
+  .search-overlay[hidden] {
+    display: none;
+  }
+
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 4rem 1rem;
+    background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  .search-panel {
+    position: relative;
+    width: 100%;
+    max-width: 40rem;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .search-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .search-close:hover {
+    border-color: var(--color-accent);
+  }
+
+  .search-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .search-form-icon {
+    position: absolute;
+    left: 0.9rem;
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    height: 2.75rem;
+    padding: 0 0.9rem 0 2.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-text);
+    font-size: 1rem;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+
+  .search-message {
+    margin: 0 0 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-result {
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .search-result:first-child {
+    border-top: none;
+  }
+
+  .search-result-title {
+    display: block;
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .search-result-title:hover {
+    color: var(--color-accent);
+  }
+
+  .search-result-excerpt {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .search-result-excerpt :global(mark) {
+    background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+    color: var(--color-text);
+    border-radius: 2px;
+  }
+</style>

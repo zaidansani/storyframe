@@ -1,5 +1,6 @@
 ---
 import Footer from '@/components/Footer.astro';
+import Search from '@/components/Search.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import { getFolderContents } from '@/lib/content/page-tree';
 import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
@@ -27,6 +28,7 @@ const { pages } = getFolderContents(allPages, LANDING_FOLDER);
   </head>
   <body>
     <ThemeToggle />
+    <Search scope="section" sectionPrefix={LANDING_FOLDER} />
     <main class="page-list">
       {pages.map((page) => (
         <button type="button" class="page-row" onclick={`window.location.href='${withBase(page.id)}'`}>
