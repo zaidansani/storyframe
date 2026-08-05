@@ -9,6 +9,7 @@ const pages = defineCollection({
         date: z.coerce.date().optional(),
         author: z.string().optional(),
         read_duration: z.number().optional(),
+        tags: z.array(z.string()).optional(),
     }),
 });
 

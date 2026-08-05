@@ -22,6 +22,7 @@ const { Content } = await render(page);
   date={page.data.date}
   author={page.data.author}
   read_duration={page.data.read_duration}
+  tags={page.data.tags}
 >
   <Content components={sectionRegistry} />
 </AppLayout>

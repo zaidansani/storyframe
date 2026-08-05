@@ -4,6 +4,7 @@ description: A sample report demonstrating headings, lists, tables, code blocks,
 date: 2026-08-04
 author: Zaidan
 read_duration: 6
+tags: ["business_report", "sample"]
 ---
 
 # Executive Summary
@@ -15,12 +16,12 @@ through May as traffic grew faster than our scaling policy could react, then
 dropped sharply once the fix shipped in early June.
 
 <LineChart
-  title="Avg. response time (ms)"
-  labels={["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"]}
-  datasets={[
-    { label: "us-east-1", data: [150, 148, 145, 130, 122, 118] },
-    { label: "eu-west-1", data: [162, 160, 155, 150, 140, 135] },
-  ]}
+    title="Avg. response time (ms)"
+    labels={["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6"]}
+    datasets={[
+        { label: "us-east-1", data: [150, 148, 145, 130, 122, 118] },
+        { label: "eu-west-1", data: [162, 160, 155, 150, 140, 135] },
+    ]}
 />
 
 > "The incident was contained within 11 minutes, but the root cause took two
@@ -34,16 +35,16 @@ avoid risk — weekly deploys jumped 29% without a corresponding rise in
 incidents.
 
 | Metric             | Q1     | Q2     | Change |
-| ------------------- | ------ | ------ | ------ |
-| Uptime              | 99.95% | 99.97% | +0.02% |
-| Avg. response time  | 142ms  | 118ms  | -17%   |
-| Incidents (P1/P2)   | 3      | 1      | -67%   |
-| Deploys per week    | 24     | 31     | +29%   |
+| ------------------ | ------ | ------ | ------ |
+| Uptime             | 99.95% | 99.97% | +0.02% |
+| Avg. response time | 142ms  | 118ms  | -17%   |
+| Incidents (P1/P2)  | 3      | 1      | -67%   |
+| Deploys per week   | 24     | 31     | +29%   |
 
 <BarChart
-  title="Deploys per week"
-  labels={["Q1", "Q2"]}
-  datasets={[{ label: "Deploys", data: [24, 31] }]}
+    title="Deploys per week"
+    labels={["Q1", "Q2"]}
+    datasets={[{ label: "Deploys", data: [24, 31] }]}
 />
 
 # Incident Breakdown
@@ -54,10 +55,10 @@ the one with the least production mileage, which tracks with it generating
 the most pages.
 
 <PieChart
-  title="Incidents by service"
-  label="Incidents"
-  labels={["Payments", "Auth", "Notifications", "Autoscaler"]}
-  data={[3, 2, 1, 4]}
+    title="Incidents by service"
+    label="Incidents"
+    labels={["Payments", "Auth", "Notifications", "Autoscaler"]}
+    data={[3, 2, 1, 4]}
 />
 
 Of those ten incidents, only one reached P1 severity — the `us-east-1`
@@ -65,10 +66,10 @@ autoscaler event covered in the executive summary. The rest were caught and
 resolved before they had customer-visible impact.
 
 <DoughnutChart
-  title="Incidents by severity"
-  label="Incidents"
-  labels={["P1", "P2", "P3"]}
-  data={[1, 2, 4]}
+    title="Incidents by severity"
+    label="Incidents"
+    labels={["P1", "P2", "P3"]}
+    data={[1, 2, 4]}
 />
 
 # Service Health
@@ -79,12 +80,18 @@ between Q1 and Q2, but deploy velocity and cost efficiency still lag behind
 the rest — both are on the roadmap for next quarter.
 
 <RadarChart
-  title="Service health scorecard"
-  labels={["Latency", "Availability", "Error rate", "Cost efficiency", "Deploy velocity"]}
-  datasets={[
-    { label: "Q1", data: [65, 80, 70, 60, 55], fill: true },
-    { label: "Q2", data: [78, 88, 82, 65, 74], fill: true },
-  ]}
+    title="Service health scorecard"
+    labels={[
+        "Latency",
+        "Availability",
+        "Error rate",
+        "Cost efficiency",
+        "Deploy velocity",
+    ]}
+    datasets={[
+        { label: "Q1", data: [65, 80, 70, 60, 55], fill: true },
+        { label: "Q2", data: [78, 88, 82, 65, 74], fill: true },
+    ]}
 />
 
 # Alert Volume
@@ -95,10 +102,10 @@ degradation. Tuning those thresholds is the single highest-leverage fix
 available to reduce on-call fatigue.
 
 <PolarAreaChart
-  title="Alert volume by category"
-  label="Alerts"
-  labels={["Latency", "Errors", "Saturation", "Traffic"]}
-  data={[12, 19, 7, 14]}
+    title="Alert volume by category"
+    label="Alerts"
+    labels={["Latency", "Errors", "Saturation", "Traffic"]}
+    data={[12, 19, 7, 14]}
 />
 
 # What Changed
@@ -123,20 +130,20 @@ policy — a good sign the predictive model isn't just reacting faster, it's
 scaling more precisely.
 
 <ScatterChart
-  title="Deploy duration vs. replica count"
-  datasets={[
-    {
-      label: "Deploys",
-      data: [
-        { x: 4, y: 42 },
-        { x: 8, y: 55 },
-        { x: 12, y: 61 },
-        { x: 20, y: 70 },
-        { x: 31, y: 88 },
-        { x: 40, y: 95 },
-      ],
-    },
-  ]}
+    title="Deploy duration vs. replica count"
+    datasets={[
+        {
+            label: "Deploys",
+            data: [
+                { x: 4, y: 42 },
+                { x: 8, y: 55 },
+                { x: 12, y: 61 },
+                { x: 20, y: 70 },
+                { x: 31, y: 88 },
+                { x: 40, y: 95 },
+            ],
+        },
+    ]}
 />
 
 # Open Questions
@@ -151,18 +158,18 @@ opposite — fewer incidents, but each one touches checkout, which is why it's
 sized largest below despite a lower raw count than the autoscaler.
 
 <BubbleChart
-  title="Incidents by service (bubble size = customer impact)"
-  datasets={[
-    {
-      label: "Incidents",
-      data: [
-        { x: 1, y: 3, r: 22 },
-        { x: 2, y: 2, r: 10 },
-        { x: 3, y: 1, r: 6 },
-        { x: 4, y: 4, r: 14 },
-      ],
-    },
-  ]}
+    title="Incidents by service (bubble size = customer impact)"
+    datasets={[
+        {
+            label: "Incidents",
+            data: [
+                { x: 1, y: 3, r: 22 },
+                { x: 2, y: 2, r: 10 },
+                { x: 3, y: 1, r: 6 },
+                { x: 4, y: 4, r: 14 },
+            ],
+        },
+    ]}
 />
 
 For more background, see the [original incident thread](/articles/intro) and

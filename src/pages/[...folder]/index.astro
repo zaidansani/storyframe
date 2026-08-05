@@ -1,6 +1,7 @@
 ---
 import Footer from '@/components/Footer.astro';
 import Search from '@/components/Search.astro';
+import TagFilter from '@/components/TagFilter.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import { getAllFolders, getFolderContents } from '@/lib/content/page-tree';
 import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
@@ -25,6 +26,7 @@ const { folder, pages } = Astro.props;
 const { subfolders, pages: folderPages } = getFolderContents(pages, folder);
 const title = folder.split('/').pop();
 const topLevelFolder = folder.split('/')[0];
+const allTags = [...new Set(folderPages.flatMap((page) => page.data.tags ?? []))].sort();
 ---
 
 <!doctype html>
@@ -40,31 +42,41 @@ const topLevelFolder = folder.split('/')[0];
   <body>
     <ThemeToggle/>
     <Search scope="section" sectionPrefix={topLevelFolder} />
-    <main class="page-list">
-      {subfolders.map((subfolder) => (
-        <button type="button" class="page-row page-row-folder" onclick={`window.location.href='${withBase(`${folder}/${subfolder}`)}'`}>
-          <h2>
-            <Icon name="lucide:folder" class="page-row-icon" />
-            <span>/{subfolder}</span>
-          </h2>
-        </button>
-      ))}
-      {folderPages.map((page) => (
-        <button type="button" class="page-row page-row-article" onclick={`window.location.href='${withBase(page.id)}'`}>
-          <h2>
-            <Icon name="lucide:file-text" class="page-row-icon" />
-            <span>{page.data.title}</span>
-          </h2>
-          {page.data.description && <p class="page-description">{page.data.description}</p>}
-          <p class="page-meta">
-            {page.data.author && <span>{page.data.author}</span>}
-            {page.data.date && (
-              <span>{page.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+    
+    <main>
+      <TagFilter tags={allTags} />
+      <div class="page-list">
+        {subfolders.map((subfolder) => (
+          <button type="button" class="page-row page-row-folder" onclick={`window.location.href='${withBase(`${folder}/${subfolder}`)}'`}>
+            <h2>
+              <Icon name="lucide:folder" class="page-row-icon" />
+              <span>/{subfolder}</span>
+            </h2>
+          </button>
+        ))}
+        {folderPages.map((page) => (
+          <button type="button" class="page-row page-row-article" data-tags={(page.data.tags ?? []).join(',')} onclick={`window.location.href='${withBase(page.id)}'`}>
+            <h2>
+              <Icon name="lucide:file-text" class="page-row-icon" />
+              <span>{page.data.title}</span>
+            </h2>
+            {page.data.description && <p class="page-description">{page.data.description}</p>}
+            <p class="page-meta">
+              {page.data.author && <span>{page.data.author}</span>}
+              {page.data.date && (
+                <span>{page.data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              )}
+              {page.data.read_duration && <span>{page.data.read_duration} min read</span>}
+            </p>
+            {page.data.tags && (
+              <ul class="page-tags">
+                {page.data.tags.map((tag) => <li class="page-tag">{tag}</li>)}
+              </ul>
             )}
-            {page.data.read_duration && <span>{page.data.read_duration} min read</span>}
-          </p>
-        </button>
-      ))}
+          </button>
+        ))}
+      </div>
+      
     </main>
     <Footer />
   </body>
