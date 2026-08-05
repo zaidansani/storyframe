@@ -1,5 +1,5 @@
 ---
-import "@/styles/chart.css";
+import "@/styles/charts/chart.css";
 
 interface Props {
   title?: string;
@@ -22,7 +22,7 @@ const datasets = [{ label, data }];
 </figure>
 
 <script>
-  import "@/lib/chart-client";
+  import "@/lib/charts/chart-client";
 </script>
 
 <script is:inline define:vars={{ id, labels, datasets }}>

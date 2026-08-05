@@ -1,7 +1,9 @@
+import { rehypeSectionize } from "@/lib/markdown/rehype-sectionize.mjs";
+import { remarkCallouts } from "@/lib/markdown/remark-callouts.mjs";
+import { remarkSidenotes } from "@/lib/markdown/remark-sidenotes.mjs";
 import mdx from "@astrojs/mdx";
 import icon from "astro-icon";
 import { defineConfig, fontProviders } from "astro/config";
-import { rehypeSectionize } from "./src/lib/rehype-sectionize.mjs";
 
 const basePath = process.env.PUBLIC_BASE_PATH ?? "";
 
@@ -10,6 +12,7 @@ export default defineConfig({
     base: basePath ? `/${basePath}` : "/",
     integrations: [mdx(), icon()],
     markdown: {
+        remarkPlugins: [remarkCallouts, remarkSidenotes],
         rehypePlugins: [rehypeSectionize],
     },
     fonts: [

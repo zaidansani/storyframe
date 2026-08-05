@@ -1,12 +1,13 @@
 ---
+import Footer from '@/components/Footer.astro';
+import { getAllFolders, getFolderContents } from '@/lib/content/page-tree';
+import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
+import { withBase } from '@/lib/utils/url';
+import '@/styles/layout/page-list.css';
+import '@/styles/layout/theme.css';
 import { Font } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import Footer from '@/components/Footer.astro';
-import { getAllFolders, getFolderContents } from '@/lib/page-tree';
-import { activeFonts, themeCSS } from '@/lib/theme-presets';
-import { withBase } from '@/lib/url';
-import '@/styles/theme.css';
-import '@/styles/page-list.css';
+import { Icon } from 'astro-icon/components';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages');
@@ -36,13 +37,19 @@ const title = folder.split('/').pop();
   <body>
     <main class="page-list">
       {subfolders.map((subfolder) => (
-        <button type="button" class="page-row" onclick={`window.location.href='${withBase(`${folder}/${subfolder}`)}'`}>
-          <h2>{subfolder}</h2>
+        <button type="button" class="page-row page-row-folder" onclick={`window.location.href='${withBase(`${folder}/${subfolder}`)}'`}>
+          <h2>
+            <Icon name="lucide:folder" class="page-row-icon" />
+            <span>/{subfolder}</span>
+          </h2>
         </button>
       ))}
       {folderPages.map((page) => (
-        <button type="button" class="page-row" onclick={`window.location.href='${withBase(page.id)}'`}>
-          <h2>{page.data.title}</h2>
+        <button type="button" class="page-row page-row-article" onclick={`window.location.href='${withBase(page.id)}'`}>
+          <h2>
+            <Icon name="lucide:file-text" class="page-row-icon" />
+            <span>{page.data.title}</span>
+          </h2>
           {page.data.description && <p class="page-description">{page.data.description}</p>}
           <p class="page-meta">
             {page.data.author && <span>{page.data.author}</span>}
