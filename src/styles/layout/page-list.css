@@ -1,9 +1,8 @@
 .page-list {
     box-sizing: border-box;
-    min-height: calc(100vh - var(--footer-height));
-    max-width: calc(var(--content-width) * 2);
-    margin: 0 auto;
-    padding: calc(var(--spacing) * 2) var(--spacing);
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding: calc(var(--spacing) * 2) 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     align-content: flex-start;
@@ -12,9 +11,10 @@
 
 .tag-filter {
     box-sizing: border-box;
-    max-width: calc(var(--content-width) * 2);
-    margin: var(--spacing) auto 0;
-    padding: 0 var(--spacing);
+    width: var(--content-width);
+    margin-inline: auto;
+    margin-top: var(--spacing);
+    padding: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
