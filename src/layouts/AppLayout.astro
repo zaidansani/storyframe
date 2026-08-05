@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.astro';
 import Search from '@/components/Search.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import Hero from '@/components/sections/Hero.astro';
+import ThemeInit from '@/components/ThemeInit.astro';
 import TableOfContents from '@/components/TableOfContents.astro';
 import Sidenotes from '@/components/containers/Sidenotes.astro';
 import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
@@ -34,14 +35,7 @@ const { title, description, date, author, read_duration, tags } = Astro.props;
     <Font cssVariable={activeFonts.body} preload />
     <Font cssVariable={activeFonts.heading} preload />
     <Font cssVariable={activeFonts.code} />
-    <script is:inline>
-      (function () {
-        const stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') {
-          document.documentElement.setAttribute('data-theme', stored);
-        }
-      })();
-    </script>
+    <ThemeInit />
     <script>
       const observer = new IntersectionObserver(
         (entries) => {

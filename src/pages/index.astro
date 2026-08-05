@@ -2,6 +2,7 @@
 import Footer from '@/components/Footer.astro';
 import Search from '@/components/Search.astro';
 import TagFilter from '@/components/TagFilter.astro';
+import ThemeInit from '@/components/ThemeInit.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import { getFolderContents } from '@/lib/content/page-tree';
 import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
@@ -24,6 +25,7 @@ const allTags = [...new Set(pages.flatMap((page) => page.data.tags ?? []))].sort
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Home</title>
+    <ThemeInit />
     <style set:html={themeCSS} />
     <Font cssVariable={activeFonts.body} preload />
     <Font cssVariable={activeFonts.heading} preload />
