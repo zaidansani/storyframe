@@ -27,6 +27,12 @@
     border-color: var(--color-accent);
 }
 
+@media (max-width: 700px) {
+    .page-list {
+        grid-template-columns: 1fr;
+    }
+}
+
 .page-row h2 {
     font-family: var(--font-main-heading);
     margin: 0 0 0.5rem;
