@@ -7,9 +7,10 @@ interface Props {
   date?: Date;
   author?: string;
   read_duration?: number;
+  tags?: string[];
 }
 
-const { title, description, date, author, read_duration } = Astro.props;
+const { title, description, date, author, read_duration, tags } = Astro.props;
 
 const formattedDate = date?.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -38,5 +39,11 @@ const hasMeta = author || date || read_duration;
     <p class="hero-meta">
       {read_duration && <span>{read_duration} min read</span>}
     </p>
+  )}
+
+  {tags && tags.length > 0 && (
+    <ul class="hero-tags">
+      {tags.map((tag) => <li class="hero-tag">{tag}</li>)}
+    </ul>
   )}
 </section>

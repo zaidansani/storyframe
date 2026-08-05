@@ -1,0 +1,82 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+{tags.length > 0 && (
+  <div class="tag-filter" data-tag-filter>
+    {tags.map((tag) => (
+      <button type="button" class="tag-filter-btn" data-tag-filter-btn data-tag={tag} data-state="neutral">{tag}</button>
+    ))}
+    <button type="button" class="tag-filter-reset" data-tag-filter-reset aria-label="Reset tag filters">
+      <Icon name="lucide:rotate-ccw" />
+    </button>
+  </div>
+)}
+
+<script>
+  type TagState = 'neutral' | 'in' | 'out';
+
+  const NEXT_STATE: Record<TagState, TagState> = {
+    neutral: 'in',
+    in: 'out',
+    out: 'neutral',
+  };
+
+  const filter = document.querySelector<HTMLDivElement>('[data-tag-filter]');
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-tag-filter-btn]');
+  const resetBtn = document.querySelector<HTMLButtonElement>('[data-tag-filter-reset]');
+  const rows = document.querySelectorAll<HTMLElement>('[data-tags]');
+
+  function applyFilter() {
+    const states = [...buttons].map((btn) => btn.dataset.state as TagState);
+    const allSame = states.every((state) => state === states[0]);
+
+    const inTags = new Set(
+      [...buttons].filter((btn) => btn.dataset.state === 'in').map((btn) => btn.dataset.tag ?? '')
+    );
+    const outTags = new Set(
+      [...buttons].filter((btn) => btn.dataset.state === 'out').map((btn) => btn.dataset.tag ?? '')
+    );
+
+    for (const row of rows) {
+      const rowTags = (row.dataset.tags ?? '').split(',').filter(Boolean);
+
+      let visible = true;
+      if (!allSame) {
+        const matchesIn = inTags.size === 0 || rowTags.some((tag) => inTags.has(tag));
+        const matchesOut = rowTags.some((tag) => outTags.has(tag));
+        visible = matchesIn && !matchesOut;
+      }
+
+      row.hidden = !visible;
+    }
+  }
+
+  filter?.addEventListener('click', (event) => {
+    const btn = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-tag-filter-btn]');
+    if (!btn) return;
+
+    const state = (btn.dataset.state ?? 'neutral') as TagState;
+    const next = NEXT_STATE[state];
+    btn.dataset.state = next;
+    btn.classList.toggle('is-in', next === 'in');
+    btn.classList.toggle('is-out', next === 'out');
+
+    applyFilter();
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    for (const btn of buttons) {
+      btn.dataset.state = 'neutral';
+      btn.classList.remove('is-in', 'is-out');
+    }
+
+    applyFilter();
+  });
+</script>

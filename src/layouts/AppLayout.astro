@@ -17,9 +17,10 @@ interface Props {
   date?: Date;
   author?: string;
   read_duration?: number;
+  tags?: string[];
 }
 
-const { title, description, date, author, read_duration } = Astro.props;
+const { title, description, date, author, read_duration, tags } = Astro.props;
 ---
 
 <!doctype html>
@@ -64,7 +65,7 @@ const { title, description, date, author, read_duration } = Astro.props;
     <Search scope="page" />
     <TableOfContents />
     <main>
-      <Hero title={title} description={description} date={date} author={author} read_duration={read_duration} />
+      <Hero title={title} description={description} date={date} author={author} read_duration={read_duration} tags={tags} />
       <div class="article-content">
         <slot />
       </div>

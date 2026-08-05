@@ -1,6 +1,7 @@
 ---
 import Footer from '@/components/Footer.astro';
 import Search from '@/components/Search.astro';
+import TagFilter from '@/components/TagFilter.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import { getFolderContents } from '@/lib/content/page-tree';
 import { activeFonts, themeCSS } from '@/lib/utils/theme-presets';
@@ -14,6 +15,7 @@ const LANDING_FOLDER = 'articles';
 
 const allPages = await getCollection('pages');
 const { pages } = getFolderContents(allPages, LANDING_FOLDER);
+const allTags = [...new Set(pages.flatMap((page) => page.data.tags ?? []))].sort();
 ---
 
 <!doctype html>
@@ -29,9 +31,12 @@ const { pages } = getFolderContents(allPages, LANDING_FOLDER);
   <body>
     <ThemeToggle />
     <Search scope="section" sectionPrefix={LANDING_FOLDER} />
-    <main class="page-list">
-      {pages.map((page) => (
-        <button type="button" class="page-row" onclick={`window.location.href='${withBase(page.id)}'`}>
+    
+    <main >
+      <TagFilter tags={allTags} />
+      <div class="page-list">
+        {pages.map((page) => (
+        <button type="button" class="page-row" data-tags={(page.data.tags ?? []).join(',')} onclick={`window.location.href='${withBase(page.id)}'`}>
           <h2>{page.data.title}</h2>
           {page.data.description && <p class="page-description">{page.data.description}</p>}
           <p class="page-meta">
@@ -41,8 +46,14 @@ const { pages } = getFolderContents(allPages, LANDING_FOLDER);
             )}
             {page.data.read_duration && <span>{page.data.read_duration} min read</span>}
           </p>
+          {page.data.tags && (
+            <ul class="page-tags">
+              {page.data.tags.map((tag) => <li class="page-tag">{tag}</li>)}
+            </ul>
+          )}
         </button>
       ))}
+      </div>
     </main>
     <Footer />
   </body>
