@@ -6,8 +6,13 @@ const footer = await getEntry('site', 'footer');
 if (!footer) {
   throw new Error('Missing site/footer.yaml entry');
 }
+
+const html = footer.data.text.replace(
+  /\[([^\]]+)\]\(([^)]+)\)/g,
+  '<a href="$2">$1</a>'
+);
 ---
 
 <footer class="site-footer">
-  <p>{footer.data.text}</p>
+  <p set:html={html} />
 </footer>
